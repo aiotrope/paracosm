@@ -1,6 +1,9 @@
 import path from 'path'
 import dotenv from 'dotenv'
 
+// manual loading of env variables using global types at types folder without using envalid package
+// import this moules as config
+
 dotenv.config({ path: path.resolve(__dirname, '../.env') })
 
 interface ENV {

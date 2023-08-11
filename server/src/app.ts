@@ -5,12 +5,9 @@ import helmet from 'helmet'
 import nocache from 'nocache'
 import morgan from 'morgan'
 
-import config from './config'
-import validateEnv from './utils/validateEnv'
+import environ from './environ'
 
 import indexRouter from './routes/index'
-
-validateEnv()
 
 const app: Application = express()
 
@@ -18,7 +15,7 @@ app.use(cookieParser())
 
 app.use(
   cors({
-    origin: [config.CLIENT_ORIGIN_DEV],
+    origin: [environ.CLIENT_ORIGIN_DEV],
     credentials: true,
     optionsSuccessStatus: 200,
   })
