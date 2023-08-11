@@ -8,12 +8,14 @@ const environ = cleanEnv(process.env, {
   NODE_ENV: str({
     choices: ['development', 'test', 'production', 'staging'],
   }),
-  PORT: port({ default: 8081 }),
+  PORT: port({ default: 8080 }),
   MONGODB_CONTAINER_PORT: port(),
   MONGODB_LOCAL_PORT: port({ default: 27017 }),
   MONGODB_USERNAME: str(),
   MONGODB_PASSWORD: str(),
   MONGODB_DATABASE_NAME: str(),
+  MONGODB_URL: str(),
+  MONGODB_DEV_URL: str(),
   CLIENT_ORIGIN_DEV: str(),
 })
 

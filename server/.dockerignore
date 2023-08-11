@@ -6,10 +6,19 @@ dev.Dockerfile
 *.md
 .gitignore
 .DS_Store
+.vscode
 node_modules
+dist
+build
 
 logs
 *.log
 yarn-debug.log*
 yarn-error.log*
 .npmrc
+
+example.*
+.env.development
+.env.production
+.env.local
+.env

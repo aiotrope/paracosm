@@ -11,6 +11,8 @@ declare global {
       MONGODB_PASSWORD: string
       MONGODB_DATABASE_NAME: string
       CLIENT_ORIGIN_DEV: string
+      MONGODB_URL: string
+      MONGODB_DEV_URL: string
     }
   }
 }

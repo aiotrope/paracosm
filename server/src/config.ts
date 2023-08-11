@@ -15,6 +15,8 @@ interface ENV {
   MONGODB_PASSWORD: string | undefined
   MONGODB_DATABASE_NAME: string | undefined
   CLIENT_ORIGIN_DEV: string | undefined
+  MONGODB_URL: string | undefined
+  MONGODB_DEV_URL: string | undefined
 }
 
 interface Config {
@@ -26,6 +28,8 @@ interface Config {
   MONGODB_PASSWORD: string
   MONGODB_DATABASE_NAME: string
   CLIENT_ORIGIN_DEV: string
+  MONGODB_URL: string
+  MONGODB_DEV_URL: string
 }
 
 const setConfig = (): ENV => ({
@@ -37,6 +41,8 @@ const setConfig = (): ENV => ({
   MONGODB_PASSWORD: process.env.MONGODB_PASSWORD,
   MONGODB_DATABASE_NAME: process.env.MONGODB_DATABASE_NAME,
   CLIENT_ORIGIN_DEV: process.env.CLIENT_ORIGIN_DEV,
+  MONGODB_URL: process.env.MONGODB_URL,
+  MONGODB_DEV_URL: process.env.MONGODB_DEV_URL,
 })
 
 const getCleanENV = (config: ENV): Config => {

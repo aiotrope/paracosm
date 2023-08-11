@@ -9,3 +9,4 @@ logs
 *.log
 yarn-debug.log*
 yarn-error.log*
+mongodb_password.txt
