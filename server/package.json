@@ -8,11 +8,10 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/aiotrope/paracosm.git"
+    "url": "https://github.com/aiotrope/reverie.git"
   },
   "devDependencies": {
-    "@types/bcryptjs": "^2.4.2",
-    "@types/config": "^3.3.0",
+    "@types/bcrypt": "^5.0.0",
     "@types/cookie-parser": "^1.4.3",
     "@types/cors": "^2.8.13",
     "@types/express": "^4.17.17",
@@ -30,15 +29,16 @@
     "eslint-plugin-import": "^2.25.2",
     "eslint-plugin-prettier": "^5.0.0",
     "prettier": "^3.0.1",
+    "ts-node-dev": "^2.0.0",
     "typescript": "^5.1.6"
   },
   "dependencies": {
     "@typegoose/typegoose": "^11.4.1",
-    "bcryptjs": "^2.4.3",
-    "config": "^3.3.9",
+    "bcrypt": "^5.1.0",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
+    "envalid": "^7.3.1",
     "express": "^4.18.2",
     "helmet": "^7.0.0",
     "http-errors": "^2.0.0",
@@ -46,9 +46,19 @@
     "lodash": "^4.17.21",
     "mongoose": "^7.4.2",
     "morgan": "^1.10.0",
+    "nocache": "^4.0.0",
     "redis": "^4.6.7",
-    "ts-node-dev": "^2.0.0",
+    "remove": "^0.1.5",
     "zod": "^3.21.4",
     "zod-error": "^1.5.0"
+  },
+  "scripts": {
+    "transpile": "rimraf dist/ && npx tsc",
+    "build": "yarn run transpile",
+    "dev": "NODE_ENV=development ts-node-dev --respawn --pretty --transpile-only --exit-child ./src/index.ts",
+    "start": "NODE_ENV=production node ./dist/index.js",
+    "linting": "eslint --ignore-path .eslintignore './src/**/*.{ts,js}'",
+    "lint": "yarn run linting -- --fix",
+    "format": "prettier --ignore-path .prettierignore --write \"**/*.+(ts|js|json|md)\""
   }
 }

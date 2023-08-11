@@ -1,0 +1,13 @@
+.dockerignore
+Dockerfile
+
+.git
+*.md
+.gitignore
+.DS_Store
+node_modules
+
+logs
+*.log
+yarn-debug.log*
+yarn-error.log*

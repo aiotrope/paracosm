@@ -24,10 +24,14 @@
     "object-curly-spacing": ["error", "always"],
     "arrow-spacing": ["error", { "before": true, "after": true }],
     "no-console": "off",
-    "no-unused-vars": "warn",
+    "no-unused-vars": "error",
     "no-process-exit": "off",
     "object-shorthand": "off",
-    "class-methods-use-this": "off"
+    "class-methods-use-this": "off",
+    "prefer-const": "warn",
+    "@typescript-eslint/no-unused-vars": [
+      "error" // or "error"
+    ]
   },
   "ignorePatterns": ["build/", "dist/", "client/", "node_modules"]
 }
