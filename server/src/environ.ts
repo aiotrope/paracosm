@@ -6,7 +6,7 @@ dotenv.config({ path: path.resolve(__dirname, '../.env') })
 
 const environ = cleanEnv(process.env, {
   NODE_ENV: str({
-    choices: ['development', 'test', 'production'],
+    choices: ['development', 'test', 'production', 'staging'],
   }),
   PORT: port({ default: 8081 }),
   MONGODB_CONTAINER_PORT: port(),

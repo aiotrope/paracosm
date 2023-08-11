@@ -1,5 +1,6 @@
 .dockerignore
 Dockerfile
+dev.Dockerfile
 
 .git
 *.md
@@ -11,3 +12,4 @@ logs
 *.log
 yarn-debug.log*
 yarn-error.log*
+.npmrc
