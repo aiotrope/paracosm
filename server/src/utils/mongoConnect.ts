@@ -5,9 +5,14 @@ import environ from '../environ'
 const mongoConnect = async () => {
   mongoose.set('strictQuery', false)
 
+  // for dockerize server app
   // const mongodbUrl = environ.MONGODB_URL
 
-  const mongodbDevUrl = environ.MONGODB_DEV_URL
+  // uncomment if only need the mongodb image as database without dockerizing the whole app
+  // const mongodbDevUrl = environ.MONGODB_DEV_URL
+
+  // for general local dev
+  const dbUrl = environ.MONGODB_ATLAS_URL
 
   const options: ConnectOptions = {
     dbName: environ.MONGODB_DATABASE_NAME,
@@ -16,9 +21,9 @@ const mongoConnect = async () => {
   }
 
   try {
-    await mongoose.connect(mongodbDevUrl, options)
+    await mongoose.connect(dbUrl, options)
 
-    console.info(`Database connected: ${mongodbDevUrl}`)
+    console.info(`Database connected: ${dbUrl}`)
   } catch (err) {
     console.error(`Connection error: ${err}`)
     process.exit(1)

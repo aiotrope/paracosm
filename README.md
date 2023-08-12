@@ -1,9 +1,7 @@
-# paracosm
-
+# reverie
 Boilerplate
 
 ## Requisite
-
 Locally installed node package manager and Docker. No need to install MongoDB locally.
 
 ## CLI Commands (init setup)
@@ -28,7 +26,7 @@ npx eslint --init
 npx install-peerdeps --dev eslint-config-airbnb-base && yarn add eslint-config-airbnb-typescript eslint-plugin-prettier eslint-config-prettier
 
 ```
-## CLI Commands (Common usage)
+## CLI Commands (common usage)
 
 ```bash
 # list all images
@@ -98,7 +96,7 @@ $ docker run -it <REPOSITORY>:<TAG> # run in integrated mode
 
 ```
 
-## CLI Commands (Local environment using Mongodb image)
+## CLI Commands (local environment using Mongodb image)
 
 Edit the `mongodb url env` in `server/src/utils/mongoConnect.ts` file from `environ.MONGODB_URL` to `environ.MONGODB_DEV_URL` to use mongo image as database without dockerizing the whole server app.
 
@@ -107,7 +105,7 @@ $ cd server && docker-compose up -d
 $ yarn run dev
 ```
 
-## CLI Commands (Dockerize server)
+## CLI Commands (dockerize server)
 
 ```bash
 # transpile ts code to js and build application as docker image

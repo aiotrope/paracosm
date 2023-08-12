@@ -17,6 +17,7 @@ interface ENV {
   CLIENT_ORIGIN_DEV: string | undefined
   MONGODB_URL: string | undefined
   MONGODB_DEV_URL: string | undefined
+  MONGODB_ATLAS_URL: string | undefined
 }
 
 interface Config {
@@ -30,6 +31,7 @@ interface Config {
   CLIENT_ORIGIN_DEV: string
   MONGODB_URL: string
   MONGODB_DEV_URL: string
+  MONGODB_ATLAS_URL: string
 }
 
 const setConfig = (): ENV => ({
@@ -43,6 +45,7 @@ const setConfig = (): ENV => ({
   CLIENT_ORIGIN_DEV: process.env.CLIENT_ORIGIN_DEV,
   MONGODB_URL: process.env.MONGODB_URL,
   MONGODB_DEV_URL: process.env.MONGODB_DEV_URL,
+  MONGODB_ATLAS_URL: process.env.MONGODB_ATLAS_URL,
 })
 
 const getCleanENV = (config: ENV): Config => {

@@ -16,6 +16,7 @@ const environ = cleanEnv(process.env, {
   MONGODB_DATABASE_NAME: str(),
   MONGODB_URL: str(),
   MONGODB_DEV_URL: str(),
+  MONGODB_ATLAS_URL: str(),
   CLIENT_ORIGIN_DEV: str(),
 })
 

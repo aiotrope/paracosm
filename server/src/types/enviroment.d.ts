@@ -13,6 +13,7 @@ declare global {
       CLIENT_ORIGIN_DEV: string
       MONGODB_URL: string
       MONGODB_DEV_URL: string
+      MONGODB_ATLAS_URL: string
     }
   }
 }

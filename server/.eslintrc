@@ -29,9 +29,11 @@
     "object-shorthand": "off",
     "class-methods-use-this": "off",
     "prefer-const": "warn",
-    "@typescript-eslint/no-unused-vars": [
-      "error" // or "error"
-    ]
+    "no-param-reassign": "off",
+    "no-underscore-dangle": "off",
+    "consistent-return": "off",
+    "@typescript-eslint/no-unused-vars": ["error"],
+    "@typescript-eslint/no-explicit-any": "off"
   },
   "ignorePatterns": ["build/", "dist/", "client/", "node_modules"]
 }
