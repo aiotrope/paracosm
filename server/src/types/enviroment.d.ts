@@ -14,6 +14,7 @@ declare global {
       MONGODB_URL: string
       MONGODB_DEV_URL: string
       MONGODB_ATLAS_URL: string
+      JWT_SECRET: string
     }
   }
 }

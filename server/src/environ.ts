@@ -18,6 +18,7 @@ const environ = cleanEnv(process.env, {
   MONGODB_DEV_URL: str(),
   MONGODB_ATLAS_URL: str(),
   CLIENT_ORIGIN_DEV: str(),
+  JWT_SECRET: str(),
 })
 
 export default environ

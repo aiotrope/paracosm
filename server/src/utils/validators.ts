@@ -10,9 +10,9 @@ const errorMessageOptions: ErrorMessageOptions = {
 }
 
 const passwordRegex =
-  /^(?=.*[0-9])(?=.*[!@#%^&*+-])[a-zA-Z0-9!@#%^&*+-=]{8,30}$/
+  /^(?=.*[0-9])(?=.*[!~#%{}^&*+=-])[a-zA-Z0-9!~#%{}^&*+=-]{8,20}$/gm
 
-const usernameRegex = /^[a-zA-Z0-9!@#%^&*+-=]{4,}$/
+const usernameRegex = /^[a-zA-Z0-9!~#%{}^&*+=-]{4,}$/
 
 const signupSchema = z
   .object({
@@ -30,7 +30,13 @@ const signupSchema = z
     }
   })
 
+const loginSchema = z.object({
+  email: z.string().email(),
+  password: z.string().trim().regex(passwordRegex),
+})
+
 export default {
   errorMessageOptions,
   signupSchema,
+  loginSchema,
 }

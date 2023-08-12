@@ -18,6 +18,7 @@ interface ENV {
   MONGODB_URL: string | undefined
   MONGODB_DEV_URL: string | undefined
   MONGODB_ATLAS_URL: string | undefined
+  JWT_SECRET: string | undefined
 }
 
 interface Config {
@@ -32,6 +33,7 @@ interface Config {
   MONGODB_URL: string
   MONGODB_DEV_URL: string
   MONGODB_ATLAS_URL: string
+  JWT_SECRET: string
 }
 
 const setConfig = (): ENV => ({
@@ -46,6 +48,7 @@ const setConfig = (): ENV => ({
   MONGODB_URL: process.env.MONGODB_URL,
   MONGODB_DEV_URL: process.env.MONGODB_DEV_URL,
   MONGODB_ATLAS_URL: process.env.MONGODB_ATLAS_URL,
+  JWT_SECRET: process.env.JWT_SECRET,
 })
 
 const getCleanENV = (config: ENV): Config => {

@@ -20,7 +20,7 @@ import { prop, getModelForClass, modelOptions } from '@typegoose/typegoose'
     },
   },
 })
-export class UserClass {
+export class User {
   @prop({
     required: true,
     trim: true,
@@ -32,7 +32,7 @@ export class UserClass {
   public username!: string
 
   @prop({ required: true, trim: true })
-  public hashedPassword?: string
+  public hashedPassword!: string
 }
 
-export const UserModel = getModelForClass(UserClass)
+export const UserModel = getModelForClass(User)

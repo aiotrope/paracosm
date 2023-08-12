@@ -2,7 +2,7 @@ import mongoose, { ConnectOptions } from 'mongoose'
 
 import environ from '../environ'
 
-const mongoConnect = async () => {
+const mongoConnect = async (): Promise<void> => {
   mongoose.set('strictQuery', false)
 
   // for dockerize server app

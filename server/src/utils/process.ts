@@ -1,3 +1,5 @@
+// listening to emitted unhandled or uncaught errors
+
 process.on('unhandledRejection', (reason: Error | any) => {
   console.error(`Unhandled Rejection: ${reason.message || reason}`)
 
