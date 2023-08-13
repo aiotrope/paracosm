@@ -18,7 +18,11 @@ interface ENV {
   MONGODB_URL: string | undefined
   MONGODB_DEV_URL: string | undefined
   MONGODB_ATLAS_URL: string | undefined
-  JWT_SECRET: string | undefined
+  SALTWORKFACTOR: number | undefined
+  PUB_KEY: string | undefined
+  PRIV_KEY: string | undefined
+  EXPIRESIN: string | undefined
+  ISS: string | undefined
 }
 
 interface Config {
@@ -33,7 +37,11 @@ interface Config {
   MONGODB_URL: string
   MONGODB_DEV_URL: string
   MONGODB_ATLAS_URL: string
-  JWT_SECRET: string
+  SALTWORKFACTOR: number
+  PUB_KEY: string
+  PRIV_KEY: string
+  EXPIRESIN: string
+  ISS: string
 }
 
 const setConfig = (): ENV => ({
@@ -48,7 +56,11 @@ const setConfig = (): ENV => ({
   MONGODB_URL: process.env.MONGODB_URL,
   MONGODB_DEV_URL: process.env.MONGODB_DEV_URL,
   MONGODB_ATLAS_URL: process.env.MONGODB_ATLAS_URL,
-  JWT_SECRET: process.env.JWT_SECRET,
+  SALTWORKFACTOR: process.env.SALTWORKFACTOR,
+  PUB_KEY: process.env.PUB_KEY,
+  PRIV_KEY: process.env.PRIV_KEY,
+  EXPIRESIN: process.env.EXPIRESIN,
+  ISS: process.env.ISS,
 })
 
 const getCleanENV = (config: ENV): Config => {

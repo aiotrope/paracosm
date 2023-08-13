@@ -14,11 +14,10 @@ const mongoConnect = async (): Promise<void> => {
   // for general local dev
   const dbUrl = environ.MONGODB_ATLAS_URL
 
-  const options: ConnectOptions = {
-    dbName: environ.MONGODB_DATABASE_NAME,
-    user: environ.MONGODB_USERNAME,
-    pass: environ.MONGODB_PASSWORD,
-  }
+  const options = {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  } as ConnectOptions
 
   try {
     await mongoose.connect(dbUrl, options)

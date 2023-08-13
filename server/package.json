@@ -41,11 +41,13 @@
     "envalid": "^7.3.1",
     "express": "^4.18.2",
     "express-async-errors": "^3.1.1",
+    "express-jwt": "^8.4.1",
     "express-mongo-sanitize": "^2.2.0",
     "helmet": "^7.0.0",
     "http-errors": "^2.0.0",
     "isomorphic-dompurify": "^1.8.0",
     "jsonwebtoken": "^9.0.1",
+    "jwt-decode": "^3.1.2",
     "lodash": "^4.17.21",
     "mongoose": "^7.4.2",
     "morgan": "^1.10.0",
@@ -57,7 +59,7 @@
     "zod-validation-error": "^1.3.1"
   },
   "scripts": {
-    "transpile": "rimraf dist/ && npx tsc",
+    "transpile": "rimraf dist/ && tsc",
     "build": "yarn run transpile",
     "dev": "NODE_ENV=development ts-node-dev --respawn --pretty --transpile-only --exit-child ./src/index.ts",
     "start": "NODE_ENV=production node ./dist/index.js",

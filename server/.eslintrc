@@ -28,10 +28,11 @@
     "no-process-exit": "off",
     "object-shorthand": "off",
     "class-methods-use-this": "off",
-    "prefer-const": "warn",
+    "prefer-const": "off",
     "no-param-reassign": "off",
     "no-underscore-dangle": "off",
     "consistent-return": "off",
+    "func-names": "off",
     "@typescript-eslint/no-unused-vars": ["error"],
     "@typescript-eslint/no-explicit-any": "off"
   },

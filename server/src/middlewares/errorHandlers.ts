@@ -65,9 +65,4 @@ const errorHandler = (
 
   next(error)
 }
-const errorMiddleware = {
-  endPoint404,
-  errorHandler,
-}
-
-export default errorMiddleware
+export { errorHandler, endPoint404 }

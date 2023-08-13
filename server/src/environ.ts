@@ -1,6 +1,6 @@
 import path from 'path'
 import dotenv from 'dotenv'
-import { cleanEnv, port, str } from 'envalid'
+import { cleanEnv, port, str, num } from 'envalid'
 
 dotenv.config({ path: path.resolve(__dirname, '../.env') })
 
@@ -19,6 +19,11 @@ const environ = cleanEnv(process.env, {
   MONGODB_ATLAS_URL: str(),
   CLIENT_ORIGIN_DEV: str(),
   JWT_SECRET: str(),
+  SALTWORKFACTOR: num(),
+  PUB_KEY: str(),
+  PRIV_KEY: str(),
+  EXPIRESIN: str(),
+  ISS: str(),
 })
 
 export default environ

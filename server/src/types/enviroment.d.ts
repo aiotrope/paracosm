@@ -1,6 +1,13 @@
-export {}
+import { UserModel } from '../models/user'
 
 declare global {
+  namespace Express {
+    interface Request {
+      currentUser: UserModel
+      access: string
+    }
+  }
+
   namespace NodeJS {
     interface ProcessEnv {
       NODE_ENV: string
@@ -14,7 +21,13 @@ declare global {
       MONGODB_URL: string
       MONGODB_DEV_URL: string
       MONGODB_ATLAS_URL: string
-      JWT_SECRET: string
+      SALTWORKFACTOR: number
+      PUB_KEY: string
+      PRIV_KEY: string
+      EXPIRESIN: string
+      ISS: string
     }
   }
 }
+
+export {}
