@@ -1,9 +1,11 @@
-import { UserModel } from '../models/user'
+import { DocumentType } from '@typegoose/typegoose'
+
+import { User } from '../models/user'
 
 declare global {
   namespace Express {
     interface Request {
-      currentUser: UserModel
+      currentUser: DocumentType<User>
       access: string
     }
   }
