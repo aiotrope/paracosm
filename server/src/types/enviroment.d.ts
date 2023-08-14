@@ -26,6 +26,8 @@ declare global {
       PRIV_KEY: string
       EXPIRESIN: string
       ISS: string
+      JWT_SECRET: string
+      JWT_SECRET_REFRESH: string
     }
   }
 }

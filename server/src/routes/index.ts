@@ -1,9 +1,9 @@
 import express from 'express'
 
-import indexController from '../controllers/index'
+import indexController from '../controllers'
 
 const router = express.Router()
 
-router.get('/', indexController.initChecker)
+router.get('', indexController.initChecker)
 
 export default router

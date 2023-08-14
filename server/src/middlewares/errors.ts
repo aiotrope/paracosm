@@ -11,7 +11,7 @@ const errorHandler = (
   _req: Request,
   res: Response,
   next: NextFunction
-): object | void => {
+) => {
   console.error(error.message)
 
   if (error.name === 'CastError') {
@@ -63,6 +63,14 @@ const errorHandler = (
     return res.status(401).json({ error: error.message })
   }
 
+  res.status(error.status || 500)
+  res.send({
+    error: error.message,
+  })
+
   next(error)
 }
-export { errorHandler, endPoint404 }
+
+const errorMiddleware = { errorHandler, endPoint404 }
+
+export default errorMiddleware

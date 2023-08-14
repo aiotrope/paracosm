@@ -41,3 +41,10 @@ export const userExtractor = async (
 
   next()
 }
+
+const authMiddleware = {
+  tokenExtractor,
+  userExtractor,
+}
+
+export default authMiddleware

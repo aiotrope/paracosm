@@ -46,7 +46,7 @@ export class User {
   @prop({ required: true, trim: true, unique: true })
   public username!: string
 
-  @prop({ required: true, trim: true, select: false })
+  @prop({ required: true, trim: true })
   public password!: string
 
   public comparePassword(password: string): Promise<boolean> {

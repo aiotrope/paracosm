@@ -7,7 +7,7 @@ import morgan from 'morgan'
 import mongoSanitize from 'express-mongo-sanitize'
 
 import environ from './environ'
-import { endPoint404, errorHandler } from './middlewares/errorHandlers'
+import errorMiddleware from './middlewares/errors'
 import './utils/process'
 
 import indexRouter from './routes/index'
@@ -43,8 +43,8 @@ app.use('/', indexRouter)
 
 app.use('/api/user', userRouter)
 
-app.use(endPoint404)
+app.use(errorMiddleware.endPoint404)
 
-app.use(errorHandler)
+app.use(errorMiddleware.errorHandler)
 
 export default app
