@@ -22,15 +22,15 @@ const signAccessToken = (userId: string) =>
         reject(createHttpError.InternalServerError())
         return
       }
-      resolve(token)
+      return resolve(token)
     })
   })
 
-const verifyAccessToken = async (token: string) => {
+const verifyAccessToken = async (accessToken: string) => {
   try {
     const privateKey: Secret = environ.JWT_SECRET
 
-    return jwt.verify(token, privateKey)
+    return jwt.verify(accessToken, privateKey)
   } catch (err) {
     if (err instanceof Error) {
       throw createHttpError.Unauthorized()
@@ -47,13 +47,14 @@ const signRefreshToken = (userId: string) =>
       issuer: environ.ISS,
       audience: userId,
       subject: userId,
-    }
+    } as SignOptions
+
     jwt.sign(payload, privateKey, options, (err, token) => {
       if (err) {
         console.error(err.message)
         reject(createHttpError.InternalServerError())
       }
-      resolve(token)
+      return resolve(token)
     })
   })
 

@@ -6,8 +6,6 @@ import { sanitize } from 'isomorphic-dompurify'
 
 import schema, { SignupType, LoginType } from '../utils/schema'
 
-// import jwtHelpers from '../utils/jwtHelpers'
-
 import { UserModel, User } from '../models/user'
 
 const createUser = async (reqBody: SignupType) => {
@@ -63,7 +61,7 @@ const authenticateUser = async (reqBody: LoginType) => {
 
   const sanitzedData = {
     email: sanitize(validData.data.email),
-    password: validData.data.password,
+    password: sanitize(validData.data.password),
   }
 
   return sanitzedData

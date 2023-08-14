@@ -1,8 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import createHttpError from 'http-errors'
-// import jwtDecode from 'jwt-decode'
 
-// import { JwtPayload } from 'jsonwebtoken'
 import { UserModel } from '../models/user'
 import jwtHelpers from '../utils/jwtHelpers'
 
@@ -26,8 +24,6 @@ export const userExtractor = async (
   next: NextFunction
 ) => {
   const { access } = req
-
-  // const decoded = jwtDecode<any>(access)
 
   const decoded = jwtHelpers.verifyAccessToken(access) as any
 

@@ -23,9 +23,12 @@ const signup = async (req: Request, res: Response) => {
       password: 0,
     })
 
-    return res.status(201).json({ message: `${user.email} created`, newUser })
+    return res
+      .status(201)
+      .json({ message: `${newUser?.email} user account created`, newUser })
   } catch (err) {
     if (err instanceof Error) {
+      console.error(err)
       throw createHttpError.UnprocessableEntity(err.message)
     }
   }

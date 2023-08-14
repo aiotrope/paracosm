@@ -10,9 +10,9 @@ const errorMessageOptions: ErrorMessageOptions = {
 }
 
 const passwordRegex =
-  /^(?=.*[0-9])(?=.*[!~#%{}^&*+=-?<>€$])[a-zA-Z0-9!~#%{}^&*+=-?<>€$]{8,30}$/gm
+  /^(?=.*[0-9])(?=.*[!~#%{}^&*+=-?<>€$@])[a-zA-Z0-9!~#%{}^&*+=-?<>€$@]{8,30}$/gm
 
-const usernameRegex = /^[a-zA-Z0-9!~#%{}^&*+=-]{4,}$/
+const usernameRegex = /^[a-zA-Z0-9!~#%{}^&*+=-?<>€$@]{4,}$/
 
 const SignupSchema = z
   .object({

@@ -8,10 +8,10 @@ POST http://localhost:8080/api/user/signup HTTP/1.1
 Content-Type: application/json
 
 {
-    "username": "user2",
-    "email": "user1@sr.io",
-    "password": "passworD1+",
-    "confirm": "passworD1+"
+    "username": "user1",
+    "email": "2@gmail.com",
+    "password": "@passworD1#",
+    "confirm": "@passworD1#"
 }
 
 ### login
@@ -19,6 +19,6 @@ POST http://localhost:8080/api/user/login HTTP/1.1
 Content-Type: application/json
 
 {
-    "email": "user1@sr.io",
-    "password": "passworD1+"
+    "email": "user1@gmail.com",
+    "password": "@passworD1#"
 }
