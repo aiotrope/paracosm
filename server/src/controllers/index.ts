@@ -1,7 +1,10 @@
-import { Request, Response } from 'express'
+import express from 'express'
 
-const initChecker = async (_req: Request, res: Response) => {
-  res.status(200).json({ message: 'Hello, World!' })
+import { Request as JWTRequest } from 'express-jwt'
+
+const initChecker = async (req: JWTRequest, res: express.Response) => {
+  const { auth } = req
+  res.status(200).json({ message: `Hello, World! ${auth?.aud}` }) //* or auth?.sub
 }
 
 const indexController = {

@@ -28,6 +28,7 @@ declare global {
       ISS: string
       JWT_SECRET: string
       JWT_SECRET_REFRESH: string
+      EXPIRESIN_REFRESH: string
     }
   }
 }

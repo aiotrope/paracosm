@@ -4,12 +4,18 @@ import createHttpError from 'http-errors'
 import { generateErrorMessage } from 'zod-error'
 import { sanitize } from 'isomorphic-dompurify'
 
-import schema, { SignupType, LoginType } from '../utils/schema'
+import jwtHelpers from '../utils/jwtHelpers'
+
+import schema, {
+  SignupType,
+  LoginType,
+  RefreshTokenType,
+} from '../utils/schema'
 
 import { UserModel, User } from '../models/user'
 
-const createUser = async (reqBody: SignupType) => {
-  const validData = await schema.SignupSchema.spa(reqBody)
+const createUser = async (request: SignupType) => {
+  const validData = await schema.SignupSchema.spa(request)
 
   if (!validData.success) {
     const errorMessage = generateErrorMessage(
@@ -40,8 +46,8 @@ const createUser = async (reqBody: SignupType) => {
   return sanitzedData
 }
 
-const authenticateUser = async (reqBody: LoginType) => {
-  const validData = await schema.LoginSchema.spa(reqBody)
+const authenticateUser = async (request: LoginType) => {
+  const validData = await schema.LoginSchema.spa(request)
 
   if (!validData.success) {
     const errorMessage = generateErrorMessage(
@@ -67,12 +73,30 @@ const authenticateUser = async (reqBody: LoginType) => {
   return sanitzedData
 }
 
-const userService = {
-  createUser,
-  authenticateUser,
+const verifyUserRefreshToken = async (request: RefreshTokenType) => {
+  const validData = await schema.RefreshTokenSchema.spa(request)
+
+  if (!validData.success) {
+    const errorMessage = generateErrorMessage(
+      validData.error.issues,
+      schema.errorMessageOptions
+    )
+    throw createHttpError.BadRequest(errorMessage)
+  }
+  const userId = (await jwtHelpers.verifyRefreshToken(
+    validData.data.refreshToken
+  )) as string
+
+  return userId
 }
 
-export default userService
+const authenticationService = {
+  createUser,
+  authenticateUser,
+  verifyUserRefreshToken,
+}
+
+export default authenticationService
 
 /*
 decoded {

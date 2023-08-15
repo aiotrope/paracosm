@@ -5,11 +5,11 @@ import createHttpError from 'http-errors'
 
 import jwtHelpers from '../utils/jwtHelpers'
 import { UserModel, User } from '../models/user'
-import userService from '../services/user'
+import authenticationService from '../services/authentication'
 
 const signup = async (req: Request, res: Response) => {
   try {
-    const result = await userService.createUser(req.body)
+    const result = await authenticationService.createUser(req.body)
 
     const user = new UserModel({
       email: result.email,
@@ -36,7 +36,7 @@ const signup = async (req: Request, res: Response) => {
 
 const login = async (req: Request, res: Response) => {
   try {
-    const result = await userService.authenticateUser(req.body)
+    const result = await authenticationService.authenticateUser(req.body)
 
     const user: DocumentType<User> | null = await UserModel.findOne({
       email: result.email,
@@ -64,9 +64,38 @@ const login = async (req: Request, res: Response) => {
   }
 }
 
-const userController = {
-  signup,
-  login,
+// type UserId = { userId: string }
+
+const refresh = async (req: Request, res: Response) => {
+  try {
+    const userId = await authenticationService.verifyUserRefreshToken(req.body)
+
+    const accessToken = await jwtHelpers.signAccessToken(userId)
+
+    const refreshToken = await jwtHelpers.signRefreshToken(userId)
+
+    console.log('access', accessToken)
+    console.log('refresh', refreshToken)
+
+    const user: DocumentType<User> | null = await UserModel.findById(userId)
+
+    return res.status(201).json({
+      message: `${user?.username} successfully refresh authentication tokens`,
+      access: accessToken,
+      refresh: refreshToken,
+    })
+  } catch (err) {
+    if (err instanceof Error) {
+      console.error(err)
+      throw createHttpError.UnprocessableEntity(err.message)
+    }
+  }
 }
 
-export default userController
+const authenticationController = {
+  signup,
+  login,
+  refresh,
+}
+
+export default authenticationController

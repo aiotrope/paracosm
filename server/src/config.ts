@@ -25,6 +25,7 @@ interface ENV {
   ISS: string | undefined
   JWT_SECRET: string | undefined
   JWT_SECRET_REFRESH: string | undefined
+  EXPIRESIN_REFRESH: string | undefined
 }
 
 interface Config {
@@ -46,6 +47,7 @@ interface Config {
   ISS: string
   JWT_SECRET: string
   JWT_SECRET_REFRESH: string
+  EXPIRESIN_REFRESH: string
 }
 
 const setConfig = (): ENV => ({
@@ -67,6 +69,7 @@ const setConfig = (): ENV => ({
   ISS: process.env.ISS,
   JWT_SECRET: process.env.JWT_SECRET,
   JWT_SECRET_REFRESH: process.env.JWT_SECRET_REFRESH,
+  EXPIRESIN_REFRESH: process.env.EXPIRESIN_REFRESH,
 })
 
 const getCleanENV = (config: ENV): Config => {

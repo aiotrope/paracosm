@@ -43,7 +43,7 @@ const signRefreshToken = (userId: string) =>
     const payload = {}
     const privateKey: Secret = environ.JWT_SECRET_REFRESH
     const options = {
-      expiresIn: '30d',
+      expiresIn: environ.EXPIRESIN_REFRESH,
       issuer: environ.ISS,
       audience: userId,
       subject: userId,
@@ -58,17 +58,17 @@ const signRefreshToken = (userId: string) =>
     })
   })
 
-const verifyRefreshToken = (refreshToken: string) => {
-  try {
+const verifyRefreshToken = (refreshToken: string) =>
+  new Promise((resolve, reject) => {
     const privateKey: Secret = environ.JWT_SECRET_REFRESH
+    jwt.verify(refreshToken, privateKey, (err, payload: any) => {
+      if (err) return reject(createHttpError.Unauthorized())
 
-    return jwt.verify(refreshToken, privateKey)
-  } catch (err) {
-    if (err instanceof Error) {
-      throw createHttpError.Unauthorized()
-    }
-  }
-}
+      const userId = payload?.aud //* as audience
+
+      return resolve(userId)
+    })
+  })
 
 export default {
   signAccessToken,

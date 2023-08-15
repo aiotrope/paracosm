@@ -11,7 +11,7 @@ import errorMiddleware from './middlewares/errors'
 import './utils/process'
 
 import indexRouter from './routes/index'
-import userRouter from './routes/user'
+import authenticationRouter from './routes/authentication'
 
 const app: Application = express()
 
@@ -41,7 +41,7 @@ if (process.env.NODE_ENV === 'development') app.use(morgan('dev'))
 
 app.use('/', indexRouter)
 
-app.use('/api/user', userRouter)
+app.use('/api/auth', authenticationRouter)
 
 app.use(errorMiddleware.endPoint404)
 

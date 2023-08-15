@@ -35,12 +35,19 @@ const LoginSchema = z.object({
   password: z.string().trim().regex(passwordRegex),
 })
 
+const RefreshTokenSchema = z.object({
+  refreshToken: z.string().trim(),
+})
+
 export type SignupType = z.infer<typeof SignupSchema>
 
 export type LoginType = z.infer<typeof LoginSchema>
+
+export type RefreshTokenType = z.infer<typeof RefreshTokenSchema>
 
 export default {
   errorMessageOptions,
   SignupSchema,
   LoginSchema,
+  RefreshTokenSchema,
 }
