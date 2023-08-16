@@ -1,6 +1,11 @@
 .dockerignore
 Dockerfile
 dev.Dockerfile
+.eslintignore
+.prettierignore
+
+.prettierrc
+.eslintrc.*
 
 .git
 *.md

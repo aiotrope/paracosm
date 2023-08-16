@@ -3,7 +3,7 @@
     "target": "ESNext",
     "useDefineForClassFields": true,
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
-    "allowJs": false,
+    "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": false,
     "allowSyntheticDefaultImports": true,
@@ -16,14 +16,7 @@
     "jsx": "react-jsx",
     "types": ["testing-library__jest-dom"]
   },
-  "include": ["src"],
-    "exclude": [
-    "node_modules",
-    "src/test",
-    "**/*.spec.ts",
-    "**/*.test.ts",
-    "**/*.spec.tsx",
-    "**/*.test.tsx"
-  ],
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "src/test", "**/*.spec.ts", "**/*.test.ts", "server/**/*", "**/*.tsx", "dist"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
