@@ -18,7 +18,5 @@ yarn-error.log*
 .npmrc
 
 example.*
-.env.development
-.env.production
-.env.local
+.env.*
 .env

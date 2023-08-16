@@ -60,7 +60,7 @@
   },
   "scripts": {
     "transpile": "rimraf dist/ && tsc",
-    "build": "yarn run transpile",
+    "build": "NODE_ENV=staging yarn run transpile",
     "dev": "NODE_ENV=development ts-node-dev --respawn --pretty --transpile-only --exit-child ./src/index.ts",
     "start": "NODE_ENV=production node ./dist/index.js",
     "linting": "eslint --ignore-path .eslintignore './src/**/*.{ts,js}'",

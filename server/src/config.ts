@@ -4,7 +4,9 @@ import dotenv from 'dotenv'
 // manual loading of env variables using global types at types folder without using envalid package
 // import this moules as config
 
-dotenv.config({ path: path.resolve(__dirname, '../.env') })
+dotenv.config({
+  path: path.resolve(__dirname, `../.env.${process.env.NODE_ENV}`),
+})
 
 interface ENV {
   NODE_ENV: string | undefined

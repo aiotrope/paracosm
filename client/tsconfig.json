@@ -17,5 +17,13 @@
     "types": ["testing-library__jest-dom"]
   },
   "include": ["src"],
+    "exclude": [
+    "node_modules",
+    "src/test",
+    "**/*.spec.ts",
+    "**/*.test.ts",
+    "**/*.spec.tsx",
+    "**/*.test.tsx"
+  ],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

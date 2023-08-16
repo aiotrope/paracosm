@@ -2,7 +2,9 @@ import path from 'path'
 import dotenv from 'dotenv'
 import { cleanEnv, port, str, num } from 'envalid'
 
-dotenv.config({ path: path.resolve(__dirname, '../.env') })
+dotenv.config({
+  path: path.resolve(__dirname, `../.env.${process.env.NODE_ENV}`),
+})
 
 const environ = cleanEnv(process.env, {
   NODE_ENV: str({
