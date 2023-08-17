@@ -4,7 +4,7 @@ Boilerplate
 ## Requisite
 Locally installed node package manager and Docker. No need to install MongoDB locally.
 
-## CLI Commands (init setup)
+## CLI Commands (server setup)
 
 ```bash
 # start a node project
@@ -20,10 +20,30 @@ tsc --init --sourceMap --rootDir src/ --outDir dist
 yarn add -D eslint prettier
 
 # init eslint
-npx eslint --init
+yarn create eslint --init
 
 # install other dev dependencies
-npx install-peerdeps --dev eslint-config-airbnb-base && yarn add eslint-config-airbnb-typescript eslint-plugin-prettier eslint-config-prettier
+npx install-peerdeps --dev eslint-config-airbnb-base 
+yarn add -D eslint-config-airbnb-typescript eslint-plugin-prettier eslint-config-prettier
+
+```
+
+## CLI Commands (client setup)
+
+```bash
+# start a Vite project with TS React
+cd <root dir> && yarn create vite 
+cd <project name>
+
+# setup eslint & prettier
+yarn add -D @typescript-eslint/eslint-plugin @typescript-eslint/parser eslint-config-airbnb-typescript eslint-plugin-jest
+
+# init eslint
+yarn create eslint --init
+
+# install other dev dependencies
+npx install-peerdeps --dev eslint-config-airbnb-base
+yarn add -D prettier eslint-config-airbnb-typescript eslint-plugin-prettier eslint-config-prettier
 
 ```
 ## CLI Commands (common usage)

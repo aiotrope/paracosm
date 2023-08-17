@@ -1,0 +1,60 @@
+{
+  "env": {
+    "browser": true,
+    "es2021": true,
+    "jest": true
+  },
+  "globals": {
+    "Atomics": "readonly",
+    "SharedArrayBuffer": "readonly"
+  },
+  "extends": [
+    "plugin:react/recommended",
+    "airbnb-typescript",
+    "airbnb/hooks",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:jest/recommended",
+    "plugin:react-hooks/recommended",
+    "plugin:jsx-a11y/recommended",
+    "plugin:prettier/recommended"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "ecmaVersion": "latest",
+    "sourceType": "module",
+    "project": "./tsconfig.json"
+  },
+  "plugins": ["react-refresh", "@typescript-eslint", "import", "prettier"],
+  "rules": {
+    "prettier/prettier": "error",
+    "react-refresh/only-export-components": ["warn", { "allowConstantExport": true }],
+    "linebreak-style": ["error", "unix"],
+    "eqeqeq": "error",
+    "no-trailing-spaces": "error",
+    "object-curly-spacing": ["error", "always"],
+    "arrow-spacing": ["error", { "before": true, "after": true }],
+    "no-unused-vars": "error",
+    "no-console": "off",
+    "no-process-exit": "off",
+    "object-shorthand": "off",
+    "class-methods-use-this": "off",
+    "prefer-const": "off",
+    "no-param-reassign": "off",
+    "no-underscore-dangle": "off",
+    "consistent-return": "off",
+    "func-names": "off",
+    "react/react-in-jsx-scope": ["off"],
+    "react/jsx-uses-react": ["off"],
+    "react/jsx-props-no-spreading": ["warn"],
+    "react/no-unescaped-entities": ["off"],
+    "react/jsx-filename-extension": "off",
+    "import/extensions": "off",
+    "@typescript-eslint/no-shadow": "off",
+    "@typescript-eslint/no-unused-vars": ["error"],
+    "@typescript-eslint/no-explicit-any": "off"
+  },
+  "ignorePatterns": ["build/", "dist/", "server/", "node_modules"]
+}
