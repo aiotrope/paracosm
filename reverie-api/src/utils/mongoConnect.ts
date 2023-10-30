@@ -1,4 +1,4 @@
-import mongoose, { ConnectOptions } from 'mongoose'
+import { mongoose } from '@typegoose/typegoose'
 
 import environ from '../environ'
 
@@ -12,12 +12,12 @@ const mongoConnect = async (): Promise<void> => {
   // const mongodbDevUrl = environ.MONGODB_DEV_URL
 
   // for general local dev with Atlas
-  const dbUrl = environ.MONGODB_ATLAS_URL
+  const dbUrl = `mongodb://${environ.DB_USERNAME}:${environ.DB_PASSWORD}`
 
   const options = {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-  } as ConnectOptions
+  } as mongoose.ConnectOptions
 
   try {
     await mongoose.connect(dbUrl, options)

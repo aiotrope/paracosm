@@ -2,7 +2,6 @@ import express, { Application } from 'express'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import helmet from 'helmet'
-import nocache from 'nocache'
 import morgan from 'morgan'
 import mongoSanitize from 'express-mongo-sanitize'
 
@@ -10,8 +9,8 @@ import environ from './environ'
 import errorMiddleware from './middlewares/errors'
 import './utils/process'
 
-import indexRouter from './routes/index'
-import authenticationRouter from './routes/authentication'
+// import indexRouter from './routes/index'
+// import authenticationRouter from './routes/authentication'
 
 const app: Application = express()
 
@@ -19,7 +18,7 @@ app.use(cookieParser())
 
 app.use(
   cors({
-    origin: [environ.CLIENT_ORIGIN_DEV],
+    origin: [environ.CLIENT_ORIGIN],
     credentials: true,
     optionsSuccessStatus: 200,
   })
@@ -35,13 +34,11 @@ app.use(mongoSanitize())
 
 app.use(helmet())
 
-app.use(nocache())
-
 if (process.env.NODE_ENV === 'development') app.use(morgan('dev'))
 
 app.use('/', indexRouter)
 
-app.use('/api/auth', authenticationRouter)
+// app.use('/api/auth', authenticationRouter)
 
 app.use(errorMiddleware.endPoint404)
 

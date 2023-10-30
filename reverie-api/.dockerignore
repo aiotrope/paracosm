@@ -1,0 +1,14 @@
+.env.*
+node_modules
+.DS_Store
+.vscode
+*.log
+logs
+.git
+.gitignore
+*.Dockerfile
+.env
+.dockerignore
+example.*
+*.md
+LICENSE
