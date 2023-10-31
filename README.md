@@ -43,3 +43,12 @@ $ docker kill <container_id>
 # run container from the image
 $ docker run -it -p 8080:8080 --name <any_nominated_name> --rm aiotrope/reverie-server:v1.0.0
 ```
+
+```bash
+# create app-screts dir & include it in .gitignore
+mkdir app-secrets
+
+# create secret file & include it in docker compose file; variable name in docker compose should end with a _FILE
+echo 'secret_value' > ./app-secrets/secret_value.txt
+
+```

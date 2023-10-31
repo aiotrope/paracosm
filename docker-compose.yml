@@ -1,16 +1,17 @@
-version: "3.9"
-
 services:
   mongo_db:
     container_name: db_container
     image: mongo:latest
-    restart: always
+    restart: 'no'
     env_file:
-      - .env.development
+      - ./reverie-api/.env.development
     environment:
-      MONGO_INITDB_ROOT_USERNAME: "${DB_USERNAME}"
-      MONGO_INITDB_ROOT_PASSWORD_FILE: "${DB_PASSWORD}"
+      MONGO_INITDB_ROOT_USERNAME_FILE: /run/secrets/db_username
+      MONGO_INITDB_ROOT_PASSWORD_FILE: /run/secrets/db_password
       MONGO_INITDB_DATABASE: "${DB_NAME}"
+    secrets:
+      - db_username
+      - db_password
     volumes:
       - mongo_db:/data/db
     ports:
@@ -35,23 +36,31 @@ services:
     image: reverie-api
     restart: 'no'
     env_file:
-      - .env.development
+      - ./reverie-api/.env.development
     environment:
       NODE_ENV: "${NODE_ENV}"
       PORT: 8080
       CLIENT_ORIGIN: "${CLIENT_ORIGIN}"
-      DB_USERNAME: "${DB_USERNAME}"
-      DB_PASSWORD: "${DB_PASSWORD}"
+      DB_USERNAME_FILE: /run/secrets/db_username
+      DB_PASSWORD_FILE: /run/secrets/db_password
       DB_NAME: "${DB_NAME}"
-      DB_URI: "${DB_URI}"
+      DB_URI_FILE: /run/secrets/db_uri
       EXPIRESIN: "${EXPIRESIN}"
       EXPIRESIN_REFRESH: "${EXPIRESIN_REFRESH}"
       ISS: "${ISS}"
       SALTWORKFACTOR: 12
-      PUB_KEY: "${PUB_KEY}"
-      PRIV_KEY: "${PRIV_KEY}"
-      JWT_SECRET: "${JWT_SECRET}"
-      JWT_SECRET_REFRESH: "${JWT_SECRET_REFRESH}"
+      PUB_KEY_FILE: /run/secrets/pub_key
+      PRIV_KEY_FILE: /run/secrets/priv_key
+      JWT_SECRET_FILE: /run/secrets/jwt_secret
+      JWT_SECRET_REFRESH_FILE: /run/secrets/jwt_secret_refresh
+    secrets:
+      - db_username
+      - db_password
+      - db_uri
+      - pub_key
+      - priv_key
+      - jwt_secret
+      - jwt_secret_refresh
     volumes:
       - ./reverie-api/:/app
       - express_node_modules:/app/node_modules
@@ -81,3 +90,19 @@ volumes:
 
 networks:
   backnet:
+
+secrets:
+  db_username:
+    file: ./app-secrets/db_username.txt
+  db_password:
+    file: ./app-secrets/db_password.txt
+  db_uri:
+    file: ./app-secrets/db_uri.txt
+  pub_key:
+    file: ./app-secrets/pub_key.txt
+  priv_key:
+    file: ./app-secrets/priv_key.txt
+  jwt_secret:
+    file: ./app-secrets/jwt_secret.txt
+  jwt_secret_refresh:
+    file: ./app-secrets/jwt_secret_refresh.txt

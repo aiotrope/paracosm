@@ -16,3 +16,4 @@ LICENSE
 .eslintrc
 .prettierrc
 .env.*
+*.txt
