@@ -1,4 +1,4 @@
-version: "3.4"
+version: "3.9"
 
 services:
   mongo_db:
@@ -6,9 +6,15 @@ services:
     image: mongo:latest
     restart: always
     env_file:
-      - ./.env.development
+      - .env.development
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: "${DB_USERNAME}"
+      MONGO_INITDB_ROOT_PASSWORD_FILE: "${DB_PASSWORD}"
+      MONGO_INITDB_DATABASE: "${DB_NAME}"
     volumes:
       - mongo_db:/data/db
+    ports:
+      - 27016:27017
     networks:
       - backnet
   
@@ -28,6 +34,24 @@ services:
       dockerfile: dev.Dockerfile
     image: reverie-api
     restart: 'no'
+    env_file:
+      - .env.development
+    environment:
+      NODE_ENV: "${NODE_ENV}"
+      PORT: 8080
+      CLIENT_ORIGIN: "${CLIENT_ORIGIN}"
+      DB_USERNAME: "${DB_USERNAME}"
+      DB_PASSWORD: "${DB_PASSWORD}"
+      DB_NAME: "${DB_NAME}"
+      DB_URI: "${DB_URI}"
+      EXPIRESIN: "${EXPIRESIN}"
+      EXPIRESIN_REFRESH: "${EXPIRESIN_REFRESH}"
+      ISS: "${ISS}"
+      SALTWORKFACTOR: 12
+      PUB_KEY: "${PUB_KEY}"
+      PRIV_KEY: "${PRIV_KEY}"
+      JWT_SECRET: "${JWT_SECRET}"
+      JWT_SECRET_REFRESH: "${JWT_SECRET_REFRESH}"
     volumes:
       - ./reverie-api/:/app
       - express_node_modules:/app/node_modules
@@ -36,8 +60,18 @@ services:
     depends_on:
       - mongo_db
       - redis
-    env_file:
-      - ./.env.development
+    networks:
+      - backnet
+
+  nginx:
+    image: nginx:latest
+    restart: on-failure
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - reverie-api
+    ports:
+      - 7800:7800
     networks:
       - backnet
      

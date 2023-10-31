@@ -11,7 +11,7 @@ const environ = cleanEnv(process.env, {
     choices: ['development', 'test', 'production', 'staging'],
   }),
   PORT: port({ default: 8080 }),
-  DB_URI: str(),
+  DB_URI: str({ default: 'mongodb://mongo_db:27017' }),
   DB_USERNAME: str(),
   DB_PASSWORD: str(),
   DB_NAME: str(),
