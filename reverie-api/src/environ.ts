@@ -10,7 +10,8 @@ const environ = cleanEnv(process.env, {
   NODE_ENV: str({
     choices: ['development', 'test', 'production', 'staging'],
   }),
-  PORT: port(),
+  PORT: port({ default: 8080 }),
+  DB_URI: str(),
   DB_USERNAME: str(),
   DB_PASSWORD: str(),
   DB_NAME: str(),

@@ -9,7 +9,7 @@ import environ from './environ'
 import errorMiddleware from './middlewares/errors'
 import './utils/process'
 
-// import indexRouter from './routes/index'
+import ckeckerRouter from './routes/checker'
 // import authenticationRouter from './routes/authentication'
 
 const app: Application = express()
@@ -36,7 +36,7 @@ app.use(helmet())
 
 if (process.env.NODE_ENV === 'development') app.use(morgan('dev'))
 
-app.use('/', indexRouter)
+app.use('/', ckeckerRouter)
 
 // app.use('/api/auth', authenticationRouter)
 

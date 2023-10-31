@@ -1,28 +1,24 @@
-import { mongoose } from '@typegoose/typegoose'
+import mongoose, { ConnectOptions } from 'mongoose'
 
 import environ from '../environ'
 
 const mongoConnect = async (): Promise<void> => {
   mongoose.set('strictQuery', false)
 
-  // for dockerize server app
-  // const mongodbUrl = environ.MONGODB_URL
-
-  // uncomment if only need the mongodb image as database without dockerizing the whole app
-  // const mongodbDevUrl = environ.MONGODB_DEV_URL
-
-  // for general local dev with Atlas
-  const dbUrl = `mongodb://${environ.DB_USERNAME}:${environ.DB_PASSWORD}`
+  const dbURL = environ.DB_URI //* mongodb://mongo_db:27017
 
   const options = {
+    dbName: environ.DB_NAME,
+    user: environ.DB_USERNAME,
+    pass: environ.DB_PASSWORD,
     useNewUrlParser: true,
     useUnifiedTopology: true,
-  } as mongoose.ConnectOptions
+  } as ConnectOptions
 
   try {
-    await mongoose.connect(dbUrl, options)
+    await mongoose.connect(dbURL, options)
 
-    console.info(`Database connected: ${dbUrl}`)
+    console.info(`Database connected: ${dbURL}`)
   } catch (err) {
     console.error(`Connection error: ${err}`)
     process.exit(1)

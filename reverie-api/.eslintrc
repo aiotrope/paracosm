@@ -16,7 +16,7 @@
     "no-trailing-spaces": "error",
     "object-curly-spacing": ["error", "always"],
     "arrow-spacing": ["error", { "before": true, "after": true }],
-    "no-console": "off",
+    "no-console": 1,
     "no-unused-vars": "error",
     "no-process-exit": "off",
     "object-shorthand": "off",
@@ -26,7 +26,7 @@
     "no-underscore-dangle": "off",
     "consistent-return": "off",
     "func-names": "off",
-    "@typescript-eslint/no-unused-vars": ["error"],
+    "@typescript-eslint/no-unused-vars": ["warning"],
     "@typescript-eslint/no-explicit-any": "off"
   },
   "ignorePatterns": ["build/", "dist/", "client/", "node_modules", "reverie-ui/"]

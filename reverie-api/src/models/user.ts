@@ -10,7 +10,7 @@ import bcrypt from 'bcrypt'
 import environ from '../environ'
 
 @index({ username: 1, email: 1 })
-@pre<User>('save', async function (next: () => any) {
+@pre<User>('save', async function (next) {
   let user = this as unknown as DocumentType<User>
 
   if (!user.isModified('password')) return next()
@@ -28,7 +28,7 @@ import environ from '../environ'
     timestamps: true,
     toJSON: {
       virtuals: true,
-      transform: function (_doc: string, ret: { id?: string; _id?: string }) {
+      transform: function (_doc, ret) {
         ret.id = ret._id
         delete ret._id
       },
