@@ -41,8 +41,8 @@ $ docker exec -it ContainerName bash
 # login to mongosh
 $ mongosh "mongodb-uri-string" --username username --password password --authenticationDatabase admin
 $ show dbs
-$ show collections
-$ show tables
+$ show collections # users
+$ show tables # users
 $ db.getCollectionNames() # users
 $ db.users.find()
 $ quit
