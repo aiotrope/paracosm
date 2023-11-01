@@ -7,7 +7,6 @@ import mongoSanitize from 'express-mongo-sanitize'
 
 import environ from './environ'
 import errorMiddleware from './middlewares/errors'
-import './utils/process'
 
 import ckeckerRouter from './routes/checker'
 import userRouter from './routes/user'

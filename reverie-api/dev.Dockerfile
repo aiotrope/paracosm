@@ -1,20 +1,12 @@
-FROM node:lts-bullseye-slim
+FROM node:lts-alpine
 
 WORKDIR /app
 
-ENV NODE_ENV development
-
-# ENV PATH /app/node_modules/.bin:$PATH
-
-# COPY --chown=node:node . .
-
-COPY package.json ./
-
-COPY yarn.lock ./
+COPY . .
 
 RUN yarn install
 
-COPY . .
+ENV NODE_ENV development
 
 EXPOSE 8080
 

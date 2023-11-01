@@ -63,7 +63,6 @@ services:
       - jwt_secret_refresh
     volumes:
       - ./reverie-api/:/app
-      - express_node_modules:/app/node_modules
     expose:
       - 8080
     depends_on:
@@ -71,6 +70,7 @@ services:
       - redis
     networks:
       - backnet
+      - frontnet
     deploy:
       replicas: 10
 
@@ -85,13 +85,34 @@ services:
       - 7800:7800
     networks:
       - backnet
+      - frontnet
+  
+  reverie-ui:
+    build:
+      context: reverie-ui
+      dockerfile: dev.Dockerfile
+    image: reverie-ui
+    volumes:
+      - ./reverie-ui/:/app
+      - vite_node_modules:/app/node_modules
+    restart: 'no'
+    expose:
+      - 5173
+    depends_on:
+      - reverie-api
+    env_file:
+      - .env.development
+    networks:
+      - backnet
+      - frontnet
      
 volumes:
   mongo_db:
-  express_node_modules:
+  vite_node_modules:
 
 networks:
   backnet:
+  frontnet:
 
 secrets:
   db_username:
