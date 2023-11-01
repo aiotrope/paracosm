@@ -5,7 +5,7 @@ import environ from '../environ'
 const mongoConnect = async (): Promise<void> => {
   mongoose.set('strictQuery', false)
 
-  const dbURL = environ.DB_URI //* mongodb://mongo_db:27017
+  const dbURL = environ.DB_URI //* mongodb://reverieuser:fgerthzutt1230xxxty@mongo_db:27017/reveriedatabase?authSource=admin
 
   const options = {
     dbName: environ.DB_NAME,

@@ -4,11 +4,11 @@ services:
     image: mongo:latest
     restart: 'no'
     env_file:
-      - ./reverie-api/.env.development
+      - ./.env.development
     environment:
       MONGO_INITDB_ROOT_USERNAME_FILE: /run/secrets/db_username
       MONGO_INITDB_ROOT_PASSWORD_FILE: /run/secrets/db_password
-      MONGO_INITDB_DATABASE: "${DB_NAME}"
+      MONGO_INITDB_DATABASE: reveriedatabase
     secrets:
       - db_username
       - db_password
@@ -36,18 +36,18 @@ services:
     image: reverie-api
     restart: 'no'
     env_file:
-      - ./reverie-api/.env.development
+      - ./.env.development
     environment:
-      NODE_ENV: "${NODE_ENV}"
+      NODE_ENV: development
       PORT: 8080
-      CLIENT_ORIGIN: "${CLIENT_ORIGIN}"
+      CLIENT_ORIGIN: http://127.0.0.1:5173
       DB_USERNAME_FILE: /run/secrets/db_username
       DB_PASSWORD_FILE: /run/secrets/db_password
-      DB_NAME: "${DB_NAME}"
+      DB_NAME: reveriedatabase
       DB_URI_FILE: /run/secrets/db_uri
-      EXPIRESIN: "${EXPIRESIN}"
-      EXPIRESIN_REFRESH: "${EXPIRESIN_REFRESH}"
-      ISS: "${ISS}"
+      EXPIRESIN: 2h
+      EXPIRESIN_REFRESH: 30d
+      ISS: http://127.0.0.1:8080
       SALTWORKFACTOR: 12
       PUB_KEY_FILE: /run/secrets/pub_key
       PRIV_KEY_FILE: /run/secrets/priv_key
@@ -71,6 +71,8 @@ services:
       - redis
     networks:
       - backnet
+    deploy:
+      replicas: 10
 
   nginx:
     image: nginx:latest

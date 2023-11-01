@@ -54,8 +54,12 @@ const errorHandler = (
     return res.status(409).json({ error: error.message })
   }
 
-  if (error.message === 'Problem fetching users') {
+  if (error.message === 'Cannot fetch all users!') {
     return res.status(422).json({ error: error.message })
+  }
+
+  if (error.message === 'User not found!') {
+    return res.status(404).json({ error: error.message })
   }
 
   if (error.message === 'Incorrect login credentials') {
