@@ -36,4 +36,19 @@ echo 'secret_value' > ./app-secrets/secret_value.txt
 # build docker images
 docker compose up -d --build
 
+# start mongodb shell on running container
+$ docker exec -it ContainerName bash
+# login to mongosh
+$ mongosh "mongodb-uri-string" --username username --password password --authenticationDatabase admin
+$ show dbs
+$ show collections
+$ show tables
+$ db.getCollectionNames() # users
+$ db.users.find()
+$ quit
+
+
+# clean slate
+$ docker system prune -a && docker images prune -a && docker volume prune -a
+
 ```

@@ -8,7 +8,10 @@ import { UserModel, User } from '../models/user'
 import userService from '../services/user'
 import { cacheMethodCalls } from '../utils/cache'
 
-const cachedUserService = cacheMethodCalls(userService, ['create'])
+const cachedUserService = cacheMethodCalls(userService, [
+  'create',
+  'authenticateUser',
+])
 
 const getUsers = async (_req: Request, res: Response) => {
   try {
@@ -52,10 +55,68 @@ const signup = async (req: Request, res: Response) => {
   }
 }
 
+const login = async (req: Request, res: Response) => {
+  try {
+    const result = await cachedUserService.authenticateUser(req.body)
+
+    const user: DocumentType<User> | null = await UserModel.findOne({
+      email: result.email,
+    })
+
+    const accessToken = (await jwtHelpers.signAccessToken(user?.id)) as string
+
+    const refreshToken = (await jwtHelpers.signRefreshToken(user?.id)) as string
+
+    const decoded = jwtHelpers.verifyAccessToken(accessToken)
+
+    console.log('accessToken', accessToken)
+
+    console.log('decoded', decoded)
+
+    return res.status(200).json({
+      message: `${user?.username} signed-in`,
+      access: accessToken,
+      refresh: refreshToken,
+    })
+  } catch (err) {
+    if (err instanceof Error) {
+      res.status(401).json({ error: err.message })
+    }
+  }
+}
+
+const refresh = async (req: Request, res: Response) => {
+  try {
+    const userId = await userService.verifyUserRefreshToken(req.body)
+
+    const accessToken = await jwtHelpers.signAccessToken(userId)
+
+    const refreshToken = await jwtHelpers.signRefreshToken(userId)
+
+    console.log('access', accessToken)
+    console.log('refresh', refreshToken)
+
+    const user: DocumentType<User> | null = await UserModel.findById(userId)
+
+    return res.status(200).json({
+      message: `${user?.username} successfully refresh auth tokens`,
+      access: accessToken,
+      refresh: refreshToken,
+    })
+  } catch (err) {
+    if (err instanceof Error) {
+      console.error(err)
+      throw createHttpError.Unauthorized(err.message)
+    }
+  }
+}
+
 const userController = {
   signup,
   getUsers,
-  getById
+  getById,
+  login,
+  refresh,
 }
 
 export default userController

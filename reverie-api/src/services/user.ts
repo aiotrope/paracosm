@@ -15,7 +15,7 @@ import schema, {
 
 type PublicUser = Omit<User, 'password'>
 
-const create = async (request: Partial<User>) => {
+const create = async (request: SignupType) => {
   const validData = await schema.SignupSchema.spa(request)
 
   if (!validData.success) {
@@ -71,10 +71,56 @@ const getUsers = async () => {
   return users
 }
 
+const authenticateUser = async (request: LoginType) => {
+  const validData = await schema.LoginSchema.spa(request)
+
+  if (!validData.success) {
+    const errorMessage = generateErrorMessage(
+      validData.error.issues,
+      schema.errorMessageOptions
+    )
+    throw createHttpError.BadRequest(errorMessage)
+  }
+
+  const user: DocumentType<User> | null = await UserModel.findOne({
+    email: validData.data.email,
+  })
+
+  const correctPassword = await user?.comparePassword(validData.data.password)
+
+  if (!correctPassword || !user) throw Error('Incorrect login credentials')
+
+  const sanitzedData = {
+    email: sanitize(validData.data.email),
+    password: sanitize(validData.data.password),
+  }
+
+  return sanitzedData
+}
+
+const verifyUserRefreshToken = async (request: RefreshTokenType) => {
+  const validData = await schema.RefreshTokenSchema.spa(request)
+
+  if (!validData.success) {
+    const errorMessage = generateErrorMessage(
+      validData.error.issues,
+      schema.errorMessageOptions
+    )
+    throw createHttpError.BadRequest(errorMessage)
+  }
+  const userId = (await jwtHelpers.verifyRefreshToken(
+    validData.data.refreshToken
+  )) as string
+
+  return userId
+}
+
 const userService = {
   create,
   getById,
   getUsers,
+  authenticateUser,
+  verifyUserRefreshToken
 }
 
 export default userService
