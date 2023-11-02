@@ -20,7 +20,7 @@ const getUsers = async (_req: Request, res: Response) => {
     return res.status(200).json(users)
   } catch (err) {
     if (err instanceof Error) {
-      console.error(err)
+      // onsole.error(err)
       throw createHttpError.UnprocessableEntity(err.message)
     }
   }
@@ -34,22 +34,27 @@ const getById = async (req: Request, res: Response) => {
     return res.status(200).json(user)
   } catch (err) {
     if (err instanceof Error) {
-      console.error(err)
+      // console.error(err)
       throw createHttpError.UnprocessableEntity(err.message)
     }
   }
 }
 
 const signup = async (req: Request, res: Response) => {
+  type PublicUser = Omit<User, 'password'>
   try {
     const result = await cachedUserService.create(req.body)
 
+    const user: PublicUser | null = await UserModel.findOne({
+      email: result.email,
+    })
+
     return res
       .status(201)
-      .json({ message: `${result?.email} user account created`, result })
+      .json({ message: `${user?.email} user account created` })
   } catch (err) {
     if (err instanceof Error) {
-      console.error(err)
+      // console.error(err)
       throw createHttpError.UnprocessableEntity(err.message)
     }
   }
@@ -67,11 +72,11 @@ const login = async (req: Request, res: Response) => {
 
     const refreshToken = (await jwtHelpers.signRefreshToken(user?.id)) as string
 
-    const decoded = jwtHelpers.verifyAccessToken(accessToken)
+    // const decoded = jwtHelpers.verifyAccessToken(accessToken)
 
-    console.log('accessToken', accessToken)
+    // console.log('accessToken', accessToken)
 
-    console.log('decoded', decoded)
+    // console.log('decoded', decoded)
 
     return res.status(200).json({
       message: `${user?.username} signed-in`,
@@ -93,8 +98,8 @@ const refresh = async (req: Request, res: Response) => {
 
     const refreshToken = await jwtHelpers.signRefreshToken(userId)
 
-    console.log('access', accessToken)
-    console.log('refresh', refreshToken)
+    // console.log('access', accessToken)
+    // console.log('refresh', refreshToken)
 
     const user: DocumentType<User> | null = await UserModel.findById(userId)
 
@@ -105,7 +110,7 @@ const refresh = async (req: Request, res: Response) => {
     })
   } catch (err) {
     if (err instanceof Error) {
-      console.error(err)
+      // console.error(err)
       throw createHttpError.Unauthorized(err.message)
     }
   }

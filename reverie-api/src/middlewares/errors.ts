@@ -12,7 +12,7 @@ const errorHandler = (
   res: Response,
   next: NextFunction
 ) => {
-  console.error(error.message)
+  // console.error(error.message)
 
   if (error.name === 'CastError') {
     return res.status(400).json({

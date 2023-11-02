@@ -1,8 +1,13 @@
-const Loader = () => {
+import React from 'react'
+
+const Loader: React.FC = () => {
   return (
-    <div role="status" className="grid">
-      <div aria-busy="true"></div>
-      <span className="sr-only">Loading...</span>
+    <div
+      className="d-flex align-items-center justify-content-center"
+      style={{ minHeight: '100vh' }}
+    >
+      <p aria-busy="true"></p>
+      <span className="sr-only visually-hidden">Loading...</span>
     </div>
   )
 }
