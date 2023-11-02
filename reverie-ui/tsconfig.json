@@ -26,7 +26,7 @@
     "strictPropertyInitialization": false
   },
   "include": ["src"],
-  "exclude": ["node_modules", "src/test", "**/*.spec.ts", "**/*.test.ts", "reverie-api/", "dist"],
+  "exclude": ["node_modules", "src/test", "reverie-api/", "dist"],
   "references": [{ "path": "./tsconfig.node.json" }],
   "typeRoots": ["./node_modules/@types"]
 }

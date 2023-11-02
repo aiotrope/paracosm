@@ -6,12 +6,10 @@ ENV NODE_ENV development
 
 ENV PATH /app/node_modules/.bin:$PATH
 
-COPY --chown=node:node . .
+COPY . .
 
 RUN yarn install
 
 EXPOSE 5173
-
-USER node
 
 CMD ["yarn", "dev"]

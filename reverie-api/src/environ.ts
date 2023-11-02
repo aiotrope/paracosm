@@ -24,7 +24,6 @@ const environ = cleanEnv(process.env, {
   ISS: str(),
   JWT_SECRET: str(),
   JWT_SECRET_REFRESH: str(),
-}) 
-
+})
 
 export default environ

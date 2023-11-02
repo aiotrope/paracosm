@@ -61,7 +61,7 @@ const getById = async (id: string) => {
   const user: PublicUser = await UserModel.findById(id).select({
     password: 0,
   })
-if (!user) throw Error('User not found!')
+  if (!user) throw Error('User not found!')
   return user
 }
 
@@ -120,7 +120,7 @@ const userService = {
   getById,
   getUsers,
   authenticateUser,
-  verifyUserRefreshToken
+  verifyUserRefreshToken,
 }
 
 export default userService

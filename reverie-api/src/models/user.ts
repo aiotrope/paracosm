@@ -6,7 +6,7 @@ import {
   pre,
   DocumentType,
 } from '@typegoose/typegoose'
-import bcrypt from 'bcrypt'
+import bcrypt from 'bcryptjs'
 import environ from '../environ'
 
 @index({ username: 1, email: 1 })
@@ -26,6 +26,7 @@ import environ from '../environ'
 @modelOptions({
   schemaOptions: {
     timestamps: true,
+    versionKey: false,
     toJSON: {
       virtuals: true,
       transform: function (_doc, ret) {
