@@ -8,8 +8,16 @@ const server = http.createServer(app)
 
 const port = environ.PORT
 
-server.listen(port, async () => {
-  console.log(`Server is running on port ${port}`)
+const start = async (): Promise<void> => {
+  try {
+    await mongoConnect()
+    server.listen(port, async () => {
+      console.log(`Server is running on port ${port}`)
+    })
+  } catch (error) {
+    console.error(error)
+    process.exit(1)
+  }
+}
 
-  await mongoConnect()
-})
+void start()

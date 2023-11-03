@@ -5,9 +5,13 @@ import {
   index,
   pre,
   DocumentType,
+  Ref,
 } from '@typegoose/typegoose'
+// import mongoose from 'mongoose'
 import bcrypt from 'bcryptjs'
 import environ from '../environ'
+
+import { Post } from './post'
 
 @index({ username: 1, email: 1 })
 @pre<User>('save', async function (next) {
@@ -37,23 +41,22 @@ import environ from '../environ'
   },
 })
 export class User {
-  @prop({
-    required: true,
-    trim: true,
-    unique: true,
-  })
+  @prop({ unique: true })
   public email!: string
 
-  @prop({ required: true, trim: true, unique: true })
+  @prop({ unique: true })
   public username!: string
 
-  @prop({ required: true, trim: true })
+  @prop({ trim: true })
   public password!: string
+
+  @prop({ ref: () => Post, default: [] })
+  public posts: Ref<Post>[]
 
   public comparePassword(password: string): Promise<boolean> {
     const user = this as unknown as DocumentType<User>
 
-    return bcrypt.compare(password, user.password)
+    return bcrypt.compare(password, user?.password)
   }
 }
 

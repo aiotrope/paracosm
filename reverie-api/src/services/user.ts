@@ -11,9 +11,8 @@ import schema, {
   SignupType,
   LoginType,
   RefreshTokenType,
+  PublicUser,
 } from '../utils/schema'
-
-type PublicUser = Omit<User, 'password'>
 
 const create = async (request: SignupType) => {
   const validData = await schema.SignupSchema.spa(request)

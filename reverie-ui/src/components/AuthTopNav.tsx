@@ -25,16 +25,18 @@ const AuthTopNav: React.FC = () => {
   return (
     <ul>
       <li>
-        <a href={'/'}>Home</a>
-      </li>
-      <li>
         <a href={'/about'}>About</a>
       </li>
       <li>
-        <a href={'/'}>Dashboard</a>
+        <a href={'/dashboard'}>Dashboard</a>
       </li>
       <li>
-        <button onClick={onLogout}>Logout</button>
+        <button className="secondary">{decoded.username}</button>
+      </li>
+      <li>
+        <button onClick={onLogout} className="outline">
+          Logout
+        </button>
       </li>
     </ul>
   )

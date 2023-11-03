@@ -2,6 +2,7 @@ import React from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useNavigate, Link } from 'react-router-dom'
 import { toast } from 'react-hot-toast'
 import Stack from 'react-bootstrap/Stack'
 import FormControl from 'react-bootstrap/FormControl'
@@ -13,6 +14,8 @@ import { SignupType, SignupSchema } from '../schema/schema'
 const Signup: React.FC = () => {
   const queryClient = useQueryClient()
 
+  const navigate = useNavigate()
+
   const mutate = useMutation({
     mutationFn: httpService.signup,
     onSuccess: (data) => {
@@ -20,6 +23,8 @@ const Signup: React.FC = () => {
       toast.success(`${data?.message}`)
       queryClient.invalidateQueries({ queryKey: userKeys.lists() })
       queryClient.invalidateQueries({ queryKey: userKeys.details() })
+
+      navigate('/login')
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onError: (error: any) => {
@@ -120,6 +125,9 @@ const Signup: React.FC = () => {
         </div>
         <button aria-busy={mutate.isPending}>Submit</button>
       </form>
+      <small>
+        Already have an account? <Link to={'/login'}>Login to Reverie</Link>
+      </small>
     </Stack>
   )
 }

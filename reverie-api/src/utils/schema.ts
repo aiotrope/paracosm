@@ -1,6 +1,8 @@
 import { ErrorMessageOptions } from 'zod-error'
 import { z } from 'zod'
 
+import { User } from '../models/user'
+
 const errorMessageOptions: ErrorMessageOptions = {
   delimiter: {
     error: ' 🔥 ',
@@ -44,6 +46,8 @@ export type SignupType = z.infer<typeof SignupSchema>
 export type LoginType = z.infer<typeof LoginSchema>
 
 export type RefreshTokenType = z.infer<typeof RefreshTokenSchema>
+
+export type PublicUser = Omit<User, 'password'>
 
 export default {
   errorMessageOptions,

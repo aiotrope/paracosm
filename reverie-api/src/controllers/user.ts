@@ -5,6 +5,7 @@ import createHttpError from 'http-errors'
 
 import jwtHelpers from '../utils/jwtHelpers'
 import { UserModel, User } from '../models/user'
+import { PublicUser } from '../utils/schema'
 import userService from '../services/user'
 import { cacheMethodCalls } from '../utils/cache'
 
@@ -41,7 +42,6 @@ const getById = async (req: Request, res: Response) => {
 }
 
 const signup = async (req: Request, res: Response) => {
-  type PublicUser = Omit<User, 'password'>
   try {
     const result = await cachedUserService.create(req.body)
 

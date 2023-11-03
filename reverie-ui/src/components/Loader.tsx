@@ -1,4 +1,5 @@
 import React from 'react'
+import Spinner from 'react-bootstrap/Spinner'
 
 const Loader: React.FC = () => {
   return (
@@ -6,8 +7,9 @@ const Loader: React.FC = () => {
       className="d-flex align-items-center justify-content-center"
       style={{ minHeight: '100vh' }}
     >
-      <p aria-busy="true"></p>
-      <span className="sr-only visually-hidden">Loading...</span>
+      <Spinner animation="grow" role="status">
+        <span className="sr-only visually-hidden">Loading...</span>
+      </Spinner>
     </div>
   )
 }

@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useSetAtom, useAtomValue } from 'jotai'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useNavigate, Link } from 'react-router-dom'
 import { toast } from 'react-hot-toast'
 import Stack from 'react-bootstrap/Stack'
 import FormControl from 'react-bootstrap/FormControl'
@@ -14,6 +15,8 @@ import { jwtAtom } from '../atoms/user'
 
 const Login: React.FC = () => {
   const queryClient = useQueryClient()
+
+  const navigate = useNavigate()
 
   const setJwt = useSetAtom(jwtAtom)
 
@@ -31,6 +34,7 @@ const Login: React.FC = () => {
       }))
       toast.success(data?.message)
       reset()
+      navigate('/dashboard')
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onError: (error: any) => {
@@ -100,6 +104,9 @@ const Login: React.FC = () => {
 
         <button aria-busy={mutation.isPending}>Submit</button>
       </form>
+      <small>
+        Need an account? <Link to={'/signup'}>Signup to Reverie</Link>
+      </small>
     </Stack>
   )
 }
