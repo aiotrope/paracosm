@@ -15,7 +15,11 @@ const App: React.FC = () => {
       <Header />
       <main className="my-5">
         <Container style={{ minHeight: '50px' }}>
-          <Toaster />
+          <Toaster
+            toastOptions={{
+              duration: 8000,
+            }}
+          />
           <RouterList />
         </Container>
       </main>

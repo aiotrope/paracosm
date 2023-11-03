@@ -21,8 +21,9 @@ const Signup: React.FC = () => {
       queryClient.invalidateQueries({ queryKey: userKeys.lists() })
       queryClient.invalidateQueries({ queryKey: userKeys.details() })
     },
-    onError: (error, context) => {
-      toast.error(`${error.message}: ${context}`)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    onError: (error: any) => {
+      toast.error(`${error?.response?.data?.error}`)
     },
   })
 
@@ -30,7 +31,8 @@ const Signup: React.FC = () => {
     register,
     reset,
     handleSubmit,
-    formState: { errors, isDirty },
+    getFieldState,
+    formState: { errors },
   } = useForm<SignupType>({
     resolver: zodResolver(SignupSchema),
     mode: 'all',
@@ -40,6 +42,11 @@ const Signup: React.FC = () => {
     const result = await mutate.mutateAsync(input)
     return result
   }
+
+  const fieldStateUsername = getFieldState('username')
+  const fieldStateEmail = getFieldState('email')
+  const fieldStatePassword = getFieldState('password')
+  const fieldStateConfirm = getFieldState('confirm')
 
   return (
     <Stack>
@@ -53,13 +60,13 @@ const Signup: React.FC = () => {
               id="username"
               placeholder="Enter username"
               {...register('username')}
-              aria-invalid={!errors.username?.message && isDirty ? 'false' : 'true'}
+              aria-invalid={fieldStateUsername?.error !== undefined && fieldStateUsername.isDirty}
               className={`${errors.username?.message ? 'is-invalid' : ''} `}
               required
             />
-            {errors.username?.message && (
-              <FormControl.Feedback type="invalid">{errors.username?.message}</FormControl.Feedback>
-            )}
+            <FormControl.Feedback type="invalid">
+              {fieldStateUsername?.error?.message}
+            </FormControl.Feedback>
           </label>
 
           <label htmlFor="email">
@@ -69,13 +76,13 @@ const Signup: React.FC = () => {
               id="email"
               placeholder="Enter email"
               {...register('email')}
-              aria-invalid={!errors.email?.message && isDirty ? 'false' : 'true'}
+              aria-invalid={fieldStateEmail?.error !== undefined && fieldStateEmail.isDirty}
               className={`${errors.email?.message ? 'is-invalid' : ''} `}
               required
             />
-            {errors.email?.message && (
-              <FormControl.Feedback type="invalid">{errors.email?.message}</FormControl.Feedback>
-            )}
+            <FormControl.Feedback type="invalid">
+              {fieldStateEmail?.error?.message}
+            </FormControl.Feedback>
           </label>
         </div>
         <div className="grid">
@@ -86,29 +93,29 @@ const Signup: React.FC = () => {
               id="password"
               placeholder="Enter password"
               {...register('password')}
-              aria-invalid={!errors.password?.message && isDirty ? 'false' : 'true'}
+              aria-invalid={fieldStatePassword.isDirty && fieldStatePassword?.error !== undefined}
               className={`${errors.password?.message ? 'is-invalid' : ''} `}
               required
             />
-            {errors.password?.message && (
-              <FormControl.Feedback type="invalid">{errors.password?.message}</FormControl.Feedback>
-            )}
+            <FormControl.Feedback type="invalid">
+              {fieldStatePassword?.error?.message}
+            </FormControl.Feedback>
           </label>
 
           <label htmlFor="confirm">
             Password confirmation
             <input
-              type="confirm"
+              type="password"
               id="confirm"
               placeholder="Repeat password"
               {...register('confirm')}
-              aria-invalid={!errors.confirm?.message && isDirty ? 'false' : 'true'}
+              aria-invalid={fieldStateConfirm.isDirty && fieldStateConfirm?.error !== undefined}
               className={`${errors.confirm?.message ? 'is-invalid' : ''} `}
               required
             />
-            {errors.confirm?.message && (
-              <FormControl.Feedback type="invalid">{errors.confirm?.message}</FormControl.Feedback>
-            )}
+            <FormControl.Feedback type="invalid">
+              {fieldStateConfirm?.error?.message}
+            </FormControl.Feedback>
           </label>
         </div>
         <button aria-busy={mutate.isPending}>Submit</button>

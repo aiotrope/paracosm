@@ -3,11 +3,15 @@ import createHttpError from 'http-errors'
 
 import environ from '../environ'
 
-const signAccessToken = (userId: string) =>
+const signAccessToken = (userId: string, username: unknown, email: unknown) =>
   new Promise((resolve, reject) => {
-    const payload = {}
+    const payload = {
+      id: userId,
+      username: username,
+      email: email,
+    }
     const privateKey: Secret = environ.JWT_SECRET
-    console.log(userId)
+    // console.log(userId)
     const options = {
       subject: userId,
       issuer: environ.ISS, //* web service api
@@ -18,7 +22,7 @@ const signAccessToken = (userId: string) =>
 
     jwt.sign(payload, privateKey, options, (err, token) => {
       if (err) {
-        console.error(err.message)
+        // console.error(err.message)
         reject(createHttpError.InternalServerError())
         return
       }
@@ -51,7 +55,7 @@ const signRefreshToken = (userId: string) =>
 
     jwt.sign(payload, privateKey, options, (err, token) => {
       if (err) {
-        console.error(err.message)
+        // console.error(err.message)
         reject(createHttpError.InternalServerError())
       }
       return resolve(token)

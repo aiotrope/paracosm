@@ -1,6 +1,15 @@
-import React from 'react'
+import React, { lazy } from 'react'
+import { useAtomValue } from 'jotai'
+
+import { jwtAtom } from '../atoms/user'
+
+const AuthTopNav = lazy(() => import('./AuthTopNav'))
+
+const UnauthTopNav = lazy(() => import('./UnauthTopNav'))
 
 const Header: React.FC = () => {
+  const jwt = useAtomValue(jwtAtom)
+
   return (
     <div className="container">
       <nav>
@@ -11,22 +20,7 @@ const Header: React.FC = () => {
             </a>
           </li>
         </ul>
-        <ul>
-          <li>
-            <a href={'/'}>Home</a>
-          </li>
-          <li>
-            <a href={'/about'}>About</a>
-          </li>
-          <li>
-            <a href={'/signup'}>Signup</a>
-          </li>
-          <li>
-            <a href={'/login'} role="button">
-              Login
-            </a>
-          </li>
-        </ul>
+        {jwt.access !== '' ? <AuthTopNav /> : <UnauthTopNav />}
       </nav>
     </div>
   )

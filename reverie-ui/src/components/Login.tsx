@@ -1,47 +1,67 @@
 import React from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useSetAtom, useAtomValue } from 'jotai'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { toast } from 'react-hot-toast'
 import Stack from 'react-bootstrap/Stack'
 import FormControl from 'react-bootstrap/FormControl'
-// import axios from 'axios'
 
 import httpService from '../services/http'
 import { userKeys } from '../services/queryKeyFactory'
 import { LoginType, LoginSchema } from '../schema/schema'
+import { jwtAtom } from '../atoms/user'
 
 const Login: React.FC = () => {
   const queryClient = useQueryClient()
 
+  const setJwt = useSetAtom(jwtAtom)
+
+  const jwt = useAtomValue(jwtAtom)
+
   const mutation = useMutation({
     mutationFn: httpService.login,
-    onSuccess: (data, context) => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: userKeys.lists() })
       queryClient.invalidateQueries({ queryKey: userKeys.details() })
+      setJwt((currentValue) => ({
+        ...currentValue,
+        access: data.access,
+        refresh: data.refresh,
+      }))
       toast.success(data?.message)
       reset()
-      console.log('LOGIN', data)
-      console.log('LOGIN', context)
     },
-    onError: (error, context) => {
-      toast.error(`${error.message}: ${context}`)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    onError: (error: any) => {
+      toast.error(`${error?.response?.data?.error}`)
     },
   })
+
+  console.log(jwt.access)
 
   const {
     register,
     reset,
     handleSubmit,
-    formState: { errors, isDirty },
+    getFieldState,
+    formState: { errors },
   } = useForm<LoginType>({
     resolver: zodResolver(LoginSchema),
     mode: 'all',
+    defaultValues: {
+      email: '',
+      password: '',
+    },
   })
 
   const onSubmit = (input: LoginType) => {
     mutation.mutate(input)
   }
+
+  const fieldStateEmail = getFieldState('email')
+
+  const fieldStatePassword = getFieldState('password')
 
   return (
     <Stack>
@@ -54,14 +74,13 @@ const Login: React.FC = () => {
               type="email"
               id="email"
               placeholder="Enter email"
-              {...register('email')}
-              aria-invalid={!errors.email?.message && isDirty ? 'false' : 'true'}
+              {...register('email', { required: true })}
+              aria-invalid={fieldStateEmail.invalid && fieldStateEmail.isDirty}
               className={`${errors.email?.message ? 'is-invalid' : ''} `}
-              required
             />
-            {errors.email?.message && (
-              <FormControl.Feedback type="invalid">{errors.email?.message}</FormControl.Feedback>
-            )}
+            <FormControl.Feedback type="invalid">
+              {fieldStateEmail?.error?.message}
+            </FormControl.Feedback>
           </label>
           <label htmlFor="password">
             Password
@@ -69,14 +88,13 @@ const Login: React.FC = () => {
               type="password"
               id="password"
               placeholder="Enter password"
-              {...register('password')}
-              aria-invalid={!errors.password?.message && isDirty ? 'false' : 'true'}
+              {...register('password', { required: true })}
+              aria-invalid={fieldStatePassword.isDirty && fieldStatePassword.invalid}
               className={`${errors.password?.message ? 'is-invalid' : ''} `}
-              required
             />
-            {errors.password?.message && (
-              <FormControl.Feedback type="invalid">{errors.password?.message}</FormControl.Feedback>
-            )}
+            <FormControl.Feedback type="invalid">
+              {fieldStatePassword?.error?.message}
+            </FormControl.Feedback>
           </label>
         </div>
 

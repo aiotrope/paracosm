@@ -68,7 +68,11 @@ const login = async (req: Request, res: Response) => {
       email: result.email,
     })
 
-    const accessToken = (await jwtHelpers.signAccessToken(user?.id)) as string
+    const accessToken = (await jwtHelpers.signAccessToken(
+      user?.id,
+      user?.username,
+      user?.email
+    )) as string
 
     const refreshToken = (await jwtHelpers.signRefreshToken(user?.id)) as string
 
@@ -94,14 +98,18 @@ const refresh = async (req: Request, res: Response) => {
   try {
     const userId = await userService.verifyUserRefreshToken(req.body)
 
-    const accessToken = await jwtHelpers.signAccessToken(userId)
+    const user: DocumentType<User> | null = await UserModel.findById(userId)
+
+    const accessToken = await jwtHelpers.signAccessToken(
+      userId,
+      user?.username,
+      user?.email
+    )
 
     const refreshToken = await jwtHelpers.signRefreshToken(userId)
 
     // console.log('access', accessToken)
     // console.log('refresh', refreshToken)
-
-    const user: DocumentType<User> | null = await UserModel.findById(userId)
 
     return res.status(200).json({
       message: `${user?.username} successfully refresh auth tokens`,
