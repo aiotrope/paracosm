@@ -1,10 +1,11 @@
 import 'express-async-errors'
 import { Request, Response } from 'express'
 import { DocumentType } from '@typegoose/typegoose'
+import mongoose from 'mongoose'
 import createHttpError from 'http-errors'
 
 import jwtHelpers from '../utils/jwtHelpers'
-import { UserModel, User } from '../models/user'
+import { UserModel, User, PostModel } from '../models'
 import { PublicUser } from '../utils/schema'
 import userService from '../services/user'
 import { cacheMethodCalls } from '../utils/cache'
@@ -12,6 +13,7 @@ import { cacheMethodCalls } from '../utils/cache'
 const cachedUserService = cacheMethodCalls(userService, [
   'create',
   'authenticateUser',
+  'deleteUser',
 ])
 
 const getUsers = async (_req: Request, res: Response) => {
@@ -48,6 +50,8 @@ const signup = async (req: Request, res: Response) => {
     const user: PublicUser | null = await UserModel.findOne({
       email: result.email,
     })
+
+    // const msg: string = `${user?.email} user account created`
 
     return res
       .status(201)
@@ -124,12 +128,42 @@ const refresh = async (req: Request, res: Response) => {
   }
 }
 
+const deleteUser = async (req: Request, res: Response) => {
+  const { id } = req.params
+
+  const user = req.currentUser
+
+  if (user.id !== id)
+    return res
+      .status(403)
+      .json({ error: `Not allowed to delete ${req.currentUser.username}` })
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ error: `${id} is not valid user id!` })
+  }
+  try {
+    const userToDelete = await cachedUserService.deleteUser(id)
+
+    await PostModel.deleteMany({ user: user.id })
+
+    if (!userToDelete) return res.status(404).json({ error: 'User not found' })
+
+    res.status(204).end()
+  } catch (err) {
+    if (err instanceof Error) {
+      // console.error(err)
+      throw createHttpError.Unauthorized(err.message)
+    }
+  }
+}
+
 const userController = {
   signup,
   getUsers,
   getById,
   login,
   refresh,
+  deleteUser,
 }
 
 export default userController

@@ -9,8 +9,9 @@ import Stack from 'react-bootstrap/Stack'
 import FormControl from 'react-bootstrap/FormControl'
 
 import httpService from '../services/http'
+import schema from '../types/schema'
+import { Login, LoginResponse } from '../types/types'
 import { userKeys } from '../services/queryKeyFactory'
-import { LoginType, LoginSchema } from '../schema/schema'
 import { jwtAtom } from '../atoms/user'
 
 const Login: React.FC = () => {
@@ -24,7 +25,7 @@ const Login: React.FC = () => {
 
   const mutation = useMutation({
     mutationFn: httpService.login,
-    onSuccess: (data) => {
+    onSuccess: (data: LoginResponse) => {
       queryClient.invalidateQueries({ queryKey: userKeys.lists() })
       queryClient.invalidateQueries({ queryKey: userKeys.details() })
       setJwt((currentValue) => ({
@@ -50,8 +51,8 @@ const Login: React.FC = () => {
     handleSubmit,
     getFieldState,
     formState: { errors },
-  } = useForm<LoginType>({
-    resolver: zodResolver(LoginSchema),
+  } = useForm<Login>({
+    resolver: zodResolver(schema.Login),
     mode: 'all',
     defaultValues: {
       email: '',
@@ -59,7 +60,7 @@ const Login: React.FC = () => {
     },
   })
 
-  const onSubmit = (input: LoginType) => {
+  const onSubmit = (input: Login) => {
     mutation.mutate(input)
   }
 

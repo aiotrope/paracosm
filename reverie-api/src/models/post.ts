@@ -1,37 +1,54 @@
-import { prop, getModelForClass, modelOptions } from '@typegoose/typegoose'
-import slugify from 'slugify'
+import { Schema, model, Document, Types } from 'mongoose'
 
-import { User } from './user'
-
-@modelOptions({
-  schemaOptions: {
-    timestamps: true,
-    versionKey: false,
-    toJSON: {
-      virtuals: true,
-      transform: function (_doc, ret) {
-        ret.id = ret._id
-        delete ret._id
-      },
-    },
-  },
-})
-export class Post {
-  @prop({ unique: true, trim: true })
-  public title!: string
-
-  @prop({ trim: true })
-  public description?: string
-
-  @prop({ trim: true })
-  public entry?: string
-
-  @prop()
-  public user: User
-
-  public get slug() {
-    return slugify(this.title, { lower: true, trim: true })
-  }
+export type TPost = {
+  title: string
+  description: string
+  entry: string
+  user: Types.ObjectId
 }
 
-export const PostModel = getModelForClass(Post)
+export interface IPost extends TPost, Document {}
+
+const PostSchema: Schema = new Schema<IPost>(
+  {
+    title: {
+      type: String,
+      min: 5,
+      unique: true,
+      required: true,
+    },
+    description: {
+      type: String,
+      min: 10,
+      required: true,
+    },
+    entry: {
+      type: String,
+      min: 10,
+      required: true,
+    },
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+    },
+  },
+  {
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+    timestamps: true,
+    versionKey: false,
+  }
+)
+
+PostSchema.set('toJSON', {
+  transform: (document, retObject) => {
+    retObject.id = retObject._id.toString()
+    delete retObject._id
+    delete retObject.__v
+    delete retObject.password
+  },
+})
+
+const PostModel = model<IPost>('PostModel', PostSchema)
+
+export default PostModel

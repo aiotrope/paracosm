@@ -10,6 +10,7 @@ import errorMiddleware from './middlewares/errors'
 
 import ckeckerRouter from './routes/checker'
 import userRouter from './routes/user'
+import postRouter from './routes/post'
 
 const app: Application = express()
 
@@ -38,6 +39,8 @@ if (process.env.NODE_ENV === 'development') app.use(morgan('dev'))
 app.use('/', ckeckerRouter)
 
 app.use('/', userRouter)
+
+app.use('/posts', postRouter)
 
 app.use(errorMiddleware.endPoint404)
 

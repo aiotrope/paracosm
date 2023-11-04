@@ -1,21 +1,18 @@
 import 'express-async-errors'
 import { DocumentType } from '@typegoose/typegoose'
+import { HydratedDocument } from 'mongoose'
 import createHttpError from 'http-errors'
 import { generateErrorMessage } from 'zod-error'
 import { sanitize } from 'isomorphic-dompurify'
 
-import { UserModel, User } from '../models/user'
+import UserModel from '../models/user'
+import { User, Signup, Login } from '../utils/types'
 import jwtHelpers from '../utils/jwtHelpers'
 
-import schema, {
-  SignupType,
-  LoginType,
-  RefreshTokenType,
-  PublicUser,
-} from '../utils/schema'
+import schema from '../utils/schema'
 
-const create = async (request: SignupType) => {
-  const validData = await schema.SignupSchema.spa(request)
+const create = async (request: Signup) => {
+  const validData = await schema.Signup.spa(request)
 
   if (!validData.success) {
     const errorMessage = generateErrorMessage(
@@ -51,27 +48,46 @@ const create = async (request: SignupType) => {
 
   await user.save()
 
-  const newUser: PublicUser | null = await UserModel.findById(user.id)
+  const newUser: User | null = await UserModel.findById(user.id)
 
   return newUser
 }
 
 const getById = async (id: string) => {
-  const user: PublicUser = await UserModel.findById(id).select({
-    password: 0,
-  })
+  const user: User | null = await UserModel.findById(id)
+    .select({
+      password: 0,
+    })
+    .populate('posts', {
+      id: 1,
+      title: 1,
+      description: 1,
+      entry: 1,
+      createdAt: 1,
+      updatedAt: 1,
+    })
   if (!user) throw Error('User not found!')
   return user
 }
 
 const getUsers = async () => {
-  const users: PublicUser[] = await UserModel.find({}, { password: 0 })
+  const users: User[] = await UserModel.find({}, { password: 0 }).populate(
+    'posts',
+    {
+      id: 1,
+      title: 1,
+      description: 1,
+      entry: 1,
+      createdAt: 1,
+      updatedAt: 1,
+    }
+  )
   if (!users) throw Error('Cannot fetch all users!')
   return users
 }
 
-const authenticateUser = async (request: LoginType) => {
-  const validData = await schema.LoginSchema.spa(request)
+const authenticateUser = async (request: Login) => {
+  const validData = await schema.Login.spa(request)
 
   if (!validData.success) {
     const errorMessage = generateErrorMessage(
@@ -81,7 +97,7 @@ const authenticateUser = async (request: LoginType) => {
     throw createHttpError.BadRequest(errorMessage)
   }
 
-  const user: DocumentType<User> | null = await UserModel.findOne({
+  const user: HydratedDocument<User> | null = await UserModel.findOne({
     email: validData.data.email,
   })
 
@@ -114,12 +130,17 @@ const verifyUserRefreshToken = async (request: RefreshTokenType) => {
   return userId
 }
 
+const deleteUser = async (id: string) => {
+  await UserModel.findByIdAndDelete(id)
+}
+
 const userService = {
   create,
   getById,
   getUsers,
   authenticateUser,
   verifyUserRefreshToken,
+  deleteUser,
 }
 
 export default userService

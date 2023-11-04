@@ -10,7 +10,7 @@ import FormControl from 'react-bootstrap/FormControl'
 
 import httpService from '../services/http'
 import { userKeys } from '../services/queryKeyFactory'
-import { LoginType, LoginSchema } from '../schema/schema'
+// import { LoginType, LoginSchema } from '../schema/schema'
 
 interface Props {
   show: boolean
@@ -69,49 +69,45 @@ const AddPostForm = ({ show, onHide }: Props) => {
         </Modal.Header>
         <Modal.Body>
           <form onSubmit={handleSubmit(onSubmit)} spellCheck="false" noValidate>
-            <label htmlFor="title">
-              Title
-              <input
-                type="text"
-                id="title"
-                placeholder="Enter post title"
-                {...register('title', { required: true })}
-                aria-invalid={fieldStateTitle.invalid && fieldStateTitle.isDirty}
-                className={`${errors.title?.message ? 'is-invalid' : ''} `}
-              />
-              <FormControl.Feedback type="invalid">
-                {fieldStateTitle?.error?.message}
-              </FormControl.Feedback>
-            </label>
-            <label htmlFor="description">
-              Description
-              <input
-                type="text"
-                id="description"
-                placeholder="Enter description"
-                {...register('description', { required: true })}
-                aria-invalid={fieldStateDescription.isDirty && fieldStateDescription.invalid}
-                className={`${errors.description?.message ? 'is-invalid' : ''} `}
-              />
-              <FormControl.Feedback type="invalid">
-                {fieldStateDescription?.error?.message}
-              </FormControl.Feedback>
-            </label>
-            <label htmlFor="entry">
-              Enter Post
-              <textarea
-                id="description"
-                placeholder="Enter your post..."
-                {...register('entry', { required: true })}
-                aria-invalid={fieldStateEntry.isDirty && fieldStateEntry.invalid}
-                className={`${errors.entry?.message ? 'is-invalid' : ''} `}
-              ></textarea>
-              <FormControl.Feedback type="invalid">
-                {fieldStateEntry?.error?.message}
-              </FormControl.Feedback>
-            </label>
+            <label htmlFor="title">Title</label>
+            <input
+              type="text"
+              id="title"
+              placeholder="Enter post title"
+              {...register('title', { required: true })}
+              aria-invalid={fieldStateTitle.invalid && fieldStateTitle.isDirty}
+              className={`${errors.title?.message ? 'is-invalid' : ''} `}
+            />
+            <FormControl.Feedback type="invalid">
+              {fieldStateTitle?.error?.message}
+            </FormControl.Feedback>
+            <label htmlFor="description">Description</label>
+            <textarea
+              id="description"
+              placeholder="Enter description"
+              {...register('description', { required: true })}
+              aria-invalid={fieldStateDescription.isDirty && fieldStateDescription.invalid}
+              className={`${errors.description?.message ? 'is-invalid' : ''} `}
+            ></textarea>
+            <FormControl.Feedback type="invalid">
+              {fieldStateDescription?.error?.message}
+            </FormControl.Feedback>
+            <label htmlFor="entry">Enter Post</label>
+            <textarea
+              id="description"
+              rows={5}
+              placeholder="Enter your post..."
+              {...register('entry', { required: true })}
+              aria-invalid={fieldStateEntry.isDirty && fieldStateEntry.invalid}
+              className={`${errors.entry?.message ? 'is-invalid' : ''} `}
+            ></textarea>
+            <FormControl.Feedback type="invalid">
+              {fieldStateEntry?.error?.message}
+            </FormControl.Feedback>
 
-            <button aria-busy={mutation.isPending}>Submit</button>
+            <div className="my-3">
+              <button aria-busy={mutation.isPending}>Submit</button>
+            </div>
           </form>
         </Modal.Body>
       </Modal>

@@ -9,7 +9,8 @@ import FormControl from 'react-bootstrap/FormControl'
 
 import httpService from '../services/http'
 import { userKeys } from '../services/queryKeyFactory'
-import { SignupType, SignupSchema } from '../schema/schema'
+import schema from '../types/schema'
+import { Signup, SignupResponse } from '../types/types'
 
 const Signup: React.FC = () => {
   const queryClient = useQueryClient()
@@ -18,7 +19,7 @@ const Signup: React.FC = () => {
 
   const mutate = useMutation({
     mutationFn: httpService.signup,
-    onSuccess: (data) => {
+    onSuccess: (data: SignupResponse) => {
       reset()
       toast.success(`${data?.message}`)
       queryClient.invalidateQueries({ queryKey: userKeys.lists() })
@@ -26,10 +27,11 @@ const Signup: React.FC = () => {
 
       navigate('/login')
     },
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
     onError: (error: any) => {
       toast.error(`${error?.response?.data?.error}`)
     },
+    /* eslint-enable-next-line @typescript-eslint/no-explicit-any */
   })
 
   const {
@@ -38,12 +40,12 @@ const Signup: React.FC = () => {
     handleSubmit,
     getFieldState,
     formState: { errors },
-  } = useForm<SignupType>({
-    resolver: zodResolver(SignupSchema),
+  } = useForm<Signup>({
+    resolver: zodResolver(schema.Signup),
     mode: 'all',
   })
 
-  const onSubmit = async (input: SignupType) => {
+  const onSubmit = async (input: Signup) => {
     const result = await mutate.mutateAsync(input)
     return result
   }

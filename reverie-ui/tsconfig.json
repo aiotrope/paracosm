@@ -23,10 +23,12 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "strictPropertyInitialization": false
+    "strictPropertyInitialization": false,
+    "noImplicitAny": true,
+    "strictNullChecks": true
   },
   "include": ["src"],
   "exclude": ["node_modules", "src/test", "reverie-api/", "dist"],
   "references": [{ "path": "./tsconfig.node.json" }],
-  "typeRoots": ["./node_modules/@types"]
+  "typeRoots": ["./node_modules/@types", "./src/@types"]
 }

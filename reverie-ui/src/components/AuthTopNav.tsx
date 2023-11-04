@@ -4,16 +4,12 @@ import { useResetAtom } from 'jotai/utils'
 import { jwtDecode } from 'jwt-decode'
 import { toast } from 'react-hot-toast'
 
-import { User } from '../schema/schema'
-
 import { jwtAtom } from '../atoms/user'
-
-type PublicUser = Omit<User, 'password'>
 
 const AuthTopNav: React.FC = () => {
   const jwt = useAtomValue(jwtAtom)
 
-  const decoded: PublicUser = jwtDecode(jwt?.access)
+  const decoded: User = jwtDecode(jwt?.access)
 
   const resetJwt = useResetAtom(jwtAtom)
   const onLogout = () => {

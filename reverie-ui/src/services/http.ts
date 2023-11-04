@@ -1,16 +1,17 @@
 import axios from 'axios'
-import { SignupType, LoginType, LoginResponse } from '../schema/schema'
 
-const signup = async (input: SignupType) => {
-  const { data: newUser } = await axios.post(`/api/signup`, input)
+import { Signup, SignupResponse, Login, LoginResponse } from '../types/types'
 
-  return newUser
+const signup = async (input: Signup) => {
+  const { data: response } = await axios.post<SignupResponse>(`/api/signup`, input)
+
+  return response
 }
 
-const login = async (input: LoginType) => {
-  const { data: user } = await axios.post<LoginResponse>(`/api/login`, input)
+const login = async (input: Login) => {
+  const { data: response } = await axios.post<LoginResponse>(`/api/login`, input)
 
-  return user
+  return response
 }
 
 const httpService = {

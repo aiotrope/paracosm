@@ -1,63 +1,53 @@
-import {
-  prop,
-  getModelForClass,
-  modelOptions,
-  index,
-  pre,
-  DocumentType,
-  Ref,
-} from '@typegoose/typegoose'
-// import mongoose from 'mongoose'
-import bcrypt from 'bcryptjs'
-import environ from '../environ'
+import { Schema, model, Document, Types } from 'mongoose'
 
-import { Post } from './post'
-
-@index({ username: 1, email: 1 })
-@pre<User>('save', async function (next) {
-  let user = this as unknown as DocumentType<User>
-
-  if (!user.isModified('password')) return next()
-
-  const salt = await bcrypt.genSaltSync(environ.SALTWORKFACTOR)
-
-  const hash = await bcrypt.hashSync(user.password, salt)
-
-  user.password = hash
-
-  return next()
-})
-@modelOptions({
-  schemaOptions: {
-    timestamps: true,
-    versionKey: false,
-    toJSON: {
-      virtuals: true,
-      transform: function (_doc, ret) {
-        ret.id = ret._id
-        delete ret._id
-      },
-    },
-  },
-})
-export class User {
-  @prop({ unique: true })
-  public email!: string
-
-  @prop({ unique: true })
-  public username!: string
-
-  @prop({ trim: true })
-  public password!: string
-
-  @prop({ ref: () => Post, default: [] })
-  public posts: Ref<Post>[]
-
-  public comparePassword(password: string): Promise<boolean> {
-    const user = this as unknown as DocumentType<User>
-
-    return bcrypt.compare(password, user?.password)
-  }
+export type TUser = {
+  email: string
+  username: string
+  password: string
+  posts: Types.ObjectId
 }
 
-export const UserModel = getModelForClass(User)
+export interface IUser extends TUser, Document {}
+
+const UserSchema: Schema = new Schema<IUser>(
+  {
+    email: {
+      type: String,
+      trim: true,
+      required: true,
+      unique: true,
+    },
+    username: {
+      type: String,
+      trim: true,
+      required: true,
+      unique: true,
+    },
+    password: { type: String, required: false, default: null },
+    posts: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Post',
+      },
+    ],
+  },
+  {
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+    timestamps: true,
+    versionKey: false,
+  }
+)
+
+UserSchema.set('toJSON', {
+  transform: (document, retObject) => {
+    retObject.id = retObject._id.toString()
+    delete retObject._id
+    delete retObject.__v
+    delete retObject.password
+  },
+})
+
+const UserModel = model<IUser>('UserModel', UserSchema)
+
+export default UserModel

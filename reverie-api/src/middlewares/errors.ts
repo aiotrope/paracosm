@@ -66,6 +66,18 @@ const errorHandler = (
     return res.status(401).json({ error: error.message })
   }
 
+  if (error.message === 'Cannot use the post title provided') {
+    return res.status(409).json({ error: error.message })
+  }
+
+  if (error.message === 'Cannot fetch all posts!') {
+    return res.status(422).json({ error: error.message })
+  }
+
+  if (error.message === 'Post not found!') {
+    return res.status(404).json({ error: error.message })
+  }
+
   res.status(error.status || 500)
   res.send({
     error: error.message,

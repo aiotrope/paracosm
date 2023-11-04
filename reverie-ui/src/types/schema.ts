@@ -1,16 +1,6 @@
-import { ErrorMessageOptions } from 'zod-error'
 import { z } from 'zod'
 
-const errorMessageOptions: ErrorMessageOptions = {
-  delimiter: {
-    error: ' 🔥 ',
-  },
-  transform: ({ errorMessage, index }) =>
-    `Error #${index + 1}: ${errorMessage}`,
-}
-
-const passwordRegex =
-  /^(?=.*[0-9])(?=.*[!~#%{}^&*+=-?<>€$@])[a-zA-Z0-9!~#%{}^&*+=-?<>€$@]{8,30}$/gm
+const passwordRegex = /^(?=.*[0-9])(?=.*[!~#%{}^&*+=-?<>€$@])[a-zA-Z0-9!~#%{}^&*+=-?<>€$@]{8,30}$/gm
 
 const usernameRegex = /^[a-zA-Z0-9!~#%{}^&*+=-?<>€$@]{4,}$/gm
 
@@ -110,7 +100,6 @@ const User = InitUser.extend({
 })
 
 const schema = {
-  errorMessageOptions,
   BaseUser,
   Signup,
   LoginResponse,
