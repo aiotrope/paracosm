@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express'
 import createHttpError from 'http-errors'
 
 import UserModel from '../models/user'
+import { User } from '../utils/types'
 import jwtHelpers from '../utils/jwtHelpers'
 
 export const tokenExtractor = (
@@ -27,7 +28,7 @@ export const userExtractor = async (
 
   const decoded = jwtHelpers.verifyAccessToken(access) as any
 
-  const user = await UserModel.findById(decoded?.id)
+  const user: User | null = await UserModel.findById(decoded?.id)
 
   if (!decoded) {
     next(createHttpError(401))

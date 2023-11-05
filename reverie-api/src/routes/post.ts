@@ -1,32 +1,44 @@
 import express from 'express'
+import { expressjwt } from 'express-jwt'
+
+import environ from '../environ'
 
 import postController from '../controllers/post'
-import authMiddleware from '../middlewares/auth'
+// import authMiddleware from '../middlewares/auth'
 
 const router = express.Router()
 
 router.post(
-  '/',
-  authMiddleware.tokenExtractor,
-  authMiddleware.userExtractor,
+  '/posts',
+  expressjwt({
+    secret: environ.JWT_SECRET,
+    issuer: environ.ISS,
+    algorithms: ['HS256'],
+  }),
   postController.create
 )
 
 router.get('/posts/:id', postController.getById)
 
-router.get('/', postController.getPosts)
+router.get('/posts', postController.getPosts)
 
 router.delete(
   '/posts/:id',
-  authMiddleware.tokenExtractor,
-  authMiddleware.userExtractor,
+  expressjwt({
+    secret: environ.JWT_SECRET,
+    issuer: environ.ISS,
+    algorithms: ['HS256'],
+  }),
   postController.deletePost
 )
 
 router.patch(
   '/posts/:id',
-  authMiddleware.tokenExtractor,
-  authMiddleware.userExtractor,
+  expressjwt({
+    secret: environ.JWT_SECRET,
+    issuer: environ.ISS,
+    algorithms: ['HS256'],
+  }),
   postController.update
 )
 

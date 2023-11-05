@@ -2,15 +2,25 @@ import 'express-async-errors'
 import { Request, Response } from 'express'
 import createHttpError from 'http-errors'
 import mongoose from 'mongoose'
-import PostModel, { IPost } from '../models/post'
+import { Request as JWTRequest } from 'express-jwt'
+
+// import PostModel from '../models/post'
 import UserModel from '../models/user'
 import postService from '../services/post'
+import userService from '../services/user'
+
 import { cacheMethodCalls } from '../utils/cache'
 
 const cachedPostService = cacheMethodCalls(postService, [
-  'create',
   'deletePost',
   'update',
+  'create',
+])
+
+const cachedUserService = cacheMethodCalls(userService, [
+  'create',
+  'authenticateUser',
+  'deleteUser',
 ])
 
 const getPosts = async (req: Request, res: Response) => {
@@ -45,25 +55,14 @@ const getById = async (req: Request, res: Response) => {
   }
 }
 
-const create = async (req: Request, res: Response) => {
+const create = async (req: JWTRequest, res: Response) => {
+  let user = await cachedUserService.getById(req?.auth?.aud)
+
   try {
-    const result = await cachedPostService.create(req, req.body)
-
-    const user = req.currentUser
-
-    const post: IPost | null = await PostModel.findOne({
-      id: result?.id,
-    }).populate('user', {
-      id: 1,
-      username: 1,
-      email: 1,
-      posts: 1,
-      createdAt: 1,
-      updatedAt: 1,
-    })
+    let post = await cachedPostService.create(req.body, user?.id)
 
     return res.status(201).json({
-      message: `${user.username} created new post: ${post?.title}`,
+      message: `${user?.username} created new post: ${post?.title}`,
       post: post,
     })
   } catch (err) {
@@ -72,25 +71,23 @@ const create = async (req: Request, res: Response) => {
     }
   }
 }
-const update = async (req: Request, res: Response) => {
-  const { id } = req.params
-  const user = req.currentUser
-  try {
-    const result = await cachedPostService.update(req, req.body, id)
 
-    const post: IPost | null = await PostModel.findOne({
-      id: result?.id,
-    }).populate('user', {
-      id: 1,
-      username: 1,
-      email: 1,
-      posts: 1,
-      createdAt: 1,
-      updatedAt: 1,
-    })
+const update = async (req: JWTRequest, res: Response) => {
+  const { id } = req.params
+  const user = await cachedUserService.getById(req?.auth?.aud)
+
+  const checkPost = await cachedPostService.getById(id)
+
+  if (checkPost?.user?.id !== req?.auth?.aud)
+    throw Error('Not allowed to update post')
+
+  try {
+    const result = await cachedPostService.update(req.body, id)
+
+    const post = await cachedPostService.getById(result?.id)
 
     return res.status(200).json({
-      message: `${user.username} updated post: ${post?.title}`,
+      message: `${user?.username} updated post: ${post?.title}`,
       post: post,
     })
   } catch (err) {
@@ -100,16 +97,14 @@ const update = async (req: Request, res: Response) => {
   }
 }
 
-const deletePost = async (req: Request, res: Response) => {
+const deletePost = async (req: JWTRequest, res: Response) => {
   const { id } = req.params
 
-  const user = req.currentUser
+  // const user = await UserModel.findById(req?.auth?.aud)
 
-  const post: IPost | null = await PostModel.findById(id).populate('user', {
-    id: 1,
-  })
+  const post = await cachedPostService.getById(id)
 
-  if (post?.user !== user.id)
+  if (post?.user?.id !== req?.auth?.aud)
     return res
       .status(403)
       .json({ error: `Not allowed to delete ${post?.title}` })

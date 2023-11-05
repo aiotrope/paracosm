@@ -1,18 +1,18 @@
 import 'express-async-errors'
-import { Request } from 'express'
-import { HydratedDocument } from 'mongoose'
 import createHttpError from 'http-errors'
 import { generateErrorMessage } from 'zod-error'
 import { sanitize } from 'isomorphic-dompurify'
+import mongoose from 'mongoose'
 
 import PostModel, { IPost } from '../models/post'
+import UserModel from '../models/user'
 import schema from '../utils/schema'
 import { CreatePost, UpdatePost, Post } from '../utils/types'
 
-const create = async (req: Request, input: CreatePost) => {
+const create = async (input: CreatePost, userId: string) => {
   const validData = await schema.CreatePost.spa(input)
 
-  const user = req.currentUser
+  const user = await UserModel.findById(userId)
 
   if (!validData.success) {
     const errorMessage = generateErrorMessage(
@@ -26,28 +26,25 @@ const create = async (req: Request, input: CreatePost) => {
 
   if (foundPost) throw Error('Cannot use the post title provided')
 
-  const sanitzedData = {
+  const sanitizedData = {
     title: sanitize(validData.data.title),
     description: sanitize(validData.data.description),
     entry: sanitize(validData.data.entry),
-    user: user,
+    user: new mongoose.Types.ObjectId(userId),
   }
 
-  const post: HydratedDocument<IPost> = new PostModel(sanitzedData)
+  const newPost = await PostModel.create(sanitizedData)
 
-  await post.save
+  if (newPost) {
+    user!.posts = user!.posts.concat(new mongoose.Types.ObjectId(newPost?.id))
 
-  if (post) {
-    user.post = user.post.concat(post)
-    await user.save
+    await user?.save()
 
-    return post
+    return newPost
   }
 }
-const update = async (req: Request, input: UpdatePost, id: string) => {
+const update = async (input: UpdatePost, id: string) => {
   const validData = await schema.UpdatePost.spa(input)
-
-  const user = req.currentUser
 
   if (!validData.success) {
     const errorMessage = generateErrorMessage(
@@ -57,22 +54,11 @@ const update = async (req: Request, input: UpdatePost, id: string) => {
     throw createHttpError.BadRequest(errorMessage)
   }
 
-  const foundPost: Post | null = await PostModel.findOne({
+  const foundPost = await PostModel.findOne({
     title: validData?.data?.title,
   })
 
   if (foundPost) throw Error('Cannot use the post title provided')
-
-  const post: Post | null = await PostModel.findById(id).populate('user', {
-    id: 1,
-    username: 1,
-    email: 1,
-    posts: 1,
-    createdAt: 1,
-    updatedAt: 1,
-  })
-
-  if (post?.user !== user.id) throw Error('Not allowed to update post')
 
   const filter = { id: id }
 
@@ -81,14 +67,7 @@ const update = async (req: Request, input: UpdatePost, id: string) => {
   const updatePost: IPost | null = await PostModel.findOneAndUpdate(
     filter,
     options
-  ).populate('user', {
-    id: 1,
-    username: 1,
-    email: 1,
-    posts: 1,
-    createdAt: 1,
-    updatedAt: 1,
-  })
+  )
 
   return updatePost
 }

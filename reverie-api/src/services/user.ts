@@ -3,7 +3,6 @@ import { HydratedDocument } from 'mongoose'
 import createHttpError from 'http-errors'
 import { generateErrorMessage } from 'zod-error'
 import { sanitize } from 'isomorphic-dompurify'
-import bcrypt from 'bcryptjs'
 
 import UserModel, { IUser } from '../models/user'
 import { User, _Signup, _Login, RefreshToken } from '../utils/types'
@@ -54,7 +53,25 @@ const create = async (request: _Signup) => {
 }
 
 const getById = async (id: string) => {
-  const user: User | null = await UserModel.findById(id)
+  const user = await UserModel.findById(id)
+    .select({
+      password: 0,
+    })
+    .populate('posts', {
+      id: 1,
+      title: 1,
+      description: 1,
+      entry: 1,
+      createdAt: 1,
+      updatedAt: 1,
+      user: 1,
+    })
+  if (!user) throw Error('User not found!')
+  return user
+}
+
+const getByEmail = async (email: string) => {
+  const user = await UserModel.findOne({ email: email })
     .select({
       password: 0,
     })
@@ -72,7 +89,7 @@ const getById = async (id: string) => {
 }
 
 const getUsers = async () => {
-  const users: User[] = await UserModel.find({}).populate('posts', {
+  const users = await UserModel.find({}).populate('posts', {
     id: 1,
     title: 1,
     description: 1,
@@ -97,14 +114,12 @@ const authenticateUser = async (request: _Login) => {
     throw createHttpError.BadRequest(errorMessage)
   }
 
-  const user: IUser | null = await UserModel.findOne({
+  const user = await UserModel.findOne({
     email: validData.data.email,
   })
 
   const correctPassword =
-    user === null
-      ? false
-      : await bcrypt.compare(validData.data.password, user.password)
+    user === null ? false : await user.comparePassword(validData.data.password)
 
   if (!(user && correctPassword)) throw Error('Incorrect login credentials')
 
@@ -144,6 +159,7 @@ const userService = {
   authenticateUser,
   verifyUserRefreshToken,
   deleteUser,
+  getByEmail,
 }
 
 export default userService

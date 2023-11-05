@@ -1,6 +1,6 @@
 ### sanity check
 GET http://localhost:7800/api/ HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NDZlZGM2NWYzNDk5OTY3ODc0MDRlZSIsInVzZXJuYW1lIjoidXNlcjEiLCJlbWFpbCI6InVzZXIxQGdtYWlsLmNvbSIsImlhdCI6MTY5OTE1MDk0MSwiZXhwIjoxNjk5MTU4MTQxLCJhdWQiOiI2NTQ2ZWRjNjVmMzQ5OTk2Nzg3NDA0ZWUiLCJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwODAiLCJzdWIiOiJ1c2VyMUBnbWFpbC5jb20ifQ.RsKI-uKFCLG2xYMdte9EWaIDl6ihbJ-1zImhlFhEiUw
+Authorization:  Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NDdmNmM4YzI3MmU2YWI0MDZhZTRmYiIsInVzZXJuYW1lIjoidXNlcjEiLCJlbWFpbCI6InVzZXIxQGdtYWlsLmNvbSIsImlhdCI6MTY5OTIxNTA1OCwiZXhwIjoxNjk5MjIyMjU4LCJhdWQiOiI2NTQ3ZjZjOGMyNzJlNmFiNDA2YWU0ZmIiLCJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwODAiLCJzdWIiOiJ1c2VyMUBnbWFpbC5jb20ifQ.bynEx6dm8tpestOl3msEyz1CChDwmoBVkHh3BfjjNIU
 
 ### signup
 POST http://localhost:7800/api/signup HTTP/1.1
@@ -14,7 +14,7 @@ Content-Type: application/json
 }
 
 ### find user by id
-GET http://localhost:7800/api/users/6542098e92077285a86b55b8 HTTP/1.1
+GET http://localhost:7800/api/users/65480b2ad0a06eee069303a1 HTTP/1.1
 
 ### find all users
 GET http://localhost:7800/api/users HTTP/1.1
@@ -34,15 +34,24 @@ POST http://localhost:7800/api/refresh HTTP/1.1
 Content-Type: application/json
 
 {
-   "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2OTg4MjcwOTMsImV4cCI6MTcwMTQxOTA5MywiYXVkIjoiNjU0MjA5OGU5MjA3NzI4NWE4NmI1NWI4IiwiaXNzIjoiaHR0cDovLzEyNy4wLjAuMTo4MDgwIiwic3ViIjoiNjU0MjA5OGU5MjA3NzI4NWE4NmI1NWI4In0.2qE661PyVHm-Wnh21ZZs0ad8qIJwhqsnQGqtFwf250M"
+   "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2OTkyMTkwNjgsImV4cCI6MTcwMTgxMTA2OCwiYXVkIjoiNjU0N2Y5NmRlNDIzZmUyNTMzNjcyZTVjIiwiaXNzIjoiaHR0cDovLzEyNy4wLjAuMTo4MDgwIiwic3ViIjoiNjU0N2Y5NmRlNDIzZmUyNTMzNjcyZTVjIn0.kNapLWjhCaaPkMtTanwWyJKtgXTpRz5_jRKuEoZe7BA"
 }
 
+
 ### get all posts
-GET http://localhost:7800/api/posts/ HTTP/1.1
+GET http://localhost:7800/api/posts HTTP/1.1
+Content-Type: application/json
+
+### find post by id
+GET http://localhost:7800/api/posts/6547f98f147db6360584febc HTTP/1.1
+Content-Type: application/json
+
 
 ### add post
 POST http://localhost:7800/api/posts HTTP/1.1
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NDY3MjU2NmUzNmFjYTQ3MWJkODU0ZSIsInVzZXJuYW1lIjoidXNlcjIiLCJlbWFpbCI6InVzZXIyQGdtYWlsLmNvbSIsImlhdCI6MTY5OTEyNTk1MSwiZXhwIjoxNjk5MTMzMTUxLCJhdWQiOiI2NTQ2NzI1NjZlMzZhY2E0NzFiZDg1NGUiLCJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwODAiLCJzdWIiOiI2NTQ2NzI1NjZlMzZhY2E0NzFiZDg1NGUifQ.1sMBl3_PVSFx_1SOav7Joh8k3YP0Rn6UMJgj5KQTUKI
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NDgwYjJhZDBhMDZlZWUwNjkzMDNhMSIsInVzZXJuYW1lIjoidXNlcjEiLCJlbWFpbCI6InVzZXIxQGdtYWlsLmNvbSIsImlhdCI6MTY5OTIyMDMzMCwiZXhwIjoxNjk5MjI3NTMwLCJhdWQiOiI2NTQ4MGIyYWQwYTA2ZWVlMDY5MzAzYTEiLCJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwODAiLCJzdWIiOiJ1c2VyMUBnbWFpbC5jb20ifQ.4kYFDANakpa7JRQKMRABPH_6g5q8uA_Bf_p5kVEb5p0
+
 
 {
     "title": "Sample title",
@@ -52,8 +61,14 @@ Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NDY3MjU2NmUzNmFj
 
 
 ### delete user
-DELETE http://localhost:7800/api/users/ HTTP/1.1
-Authorization: Bearer
+DELETE http://localhost:7800/api/users/6547f96de423fe2533672e5c HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NDdmOTZkZTQyM2ZlMjUzMzY3MmU1YyIsInVzZXJuYW1lIjoidXNlcjEiLCJlbWFpbCI6InVzZXIxQGdtYWlsLmNvbSIsImlhdCI6MTY5OTIyMDE5MCwiZXhwIjoxNjk5MjI3MzkwLCJhdWQiOiI2NTQ3Zjk2ZGU0MjNmZTI1MzM2NzJlNWMiLCJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwODAiLCJzdWIiOiJ1c2VyMUBnbWFpbC5jb20ifQ.prJv-dSe6OVa1AD5dwy1OTY4VLKp7G7G58ekrOPFP3s
+
+
+### delete post by id
+DELETE http://localhost:7800/api/posts/6547f98f147db6360584febc HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NDdmOTZkZTQyM2ZlMjUzMzY3MmU1YyIsInVzZXJuYW1lIjoidXNlcjEiLCJlbWFpbCI6InVzZXIxQGdtYWlsLmNvbSIsImlhdCI6MTY5OTIxNTcyOSwiZXhwIjoxNjk5MjIyOTI5LCJhdWQiOiI2NTQ3Zjk2ZGU0MjNmZTI1MzM2NzJlNWMiLCJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwODAiLCJzdWIiOiJ1c2VyMUBnbWFpbC5jb20ifQ.1Yu0gBUVH_Ng-xnn79O5B1ojHyI0i7cJf0OE9Bn0-Gs
 
 
 

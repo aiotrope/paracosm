@@ -40,7 +40,7 @@ app.use('/', ckeckerRouter)
 
 app.use('/', userRouter)
 
-app.use('/posts', postRouter)
+app.use('/', postRouter)
 
 app.use(errorMiddleware.endPoint404)
 

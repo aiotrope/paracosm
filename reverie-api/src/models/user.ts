@@ -1,11 +1,17 @@
-import { Schema, model, Types, Document } from 'mongoose'
+import mongoose, { Schema, Document, Types, Model, model } from 'mongoose'
 import bcrypt from 'bcryptjs'
 
 export interface IUser extends Document {
+  id: string
   email: string
   username: string
   password: string
-  posts: Types.ObjectId
+  posts: Types.ObjectId[]
+  createdAt: Date
+  updatedAt: Date
+  /* eslint-disable-next-line no-unused-vars */
+  comparePassword(password: string): Promise<boolean>
+  /* eslint-enable-next-line no-unused-vars */
 }
 
 const UserSchema: Schema = new Schema<IUser>(
@@ -50,14 +56,35 @@ UserSchema.set('toJSON', {
 })
 
 UserSchema.pre<IUser>('save', async function (next) {
-  if (!this.isModified('password')) {
-    return next()
-  }
-  const salt = await bcrypt.genSalt(10)
-  this.password = bcrypt.hashSync(this.password, salt)
-  next()
+  const user = this as IUser
+
+  if (!user.isModified('password')) return next()
+
+  const salt = await bcrypt.genSaltSync(10)
+  const hash = bcrypt.hashSync(user.password, salt)
+
+  user.password = hash
+
+  return next()
 })
 
-const UserModel = model<IUser>('UserModel', UserSchema)
+UserSchema.methods.comparePassword = async function (password: string) {
+  const user = this as IUser
+  return bcrypt.compare(password, user.password)
+}
+
+UserSchema.pre<IUser>(
+  'deleteMany',
+  { document: true, query: false },
+  function (next) {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    const target: any = this
+    target?.model('PostModel').deleteMany({ user: target._id }, next)
+  }
+)
+
+const UserModel =
+  (mongoose.models.UserModel as Model<IUser>) ||
+  model<IUser>('UserModel', UserSchema)
 
 export default UserModel

@@ -7,7 +7,7 @@ import { Request as JWTRequest } from 'express-jwt'
 import jwtHelpers from '../utils/jwtHelpers'
 import PostModel from '../models/post'
 import UserModel from '../models/user'
-import { User } from '../utils/types'
+// import { User } from '../utils/types'
 import userService from '../services/user'
 import { cacheMethodCalls } from '../utils/cache'
 
@@ -48,9 +48,7 @@ const signup = async (req: Request, res: Response) => {
   try {
     const result = await cachedUserService.create(req.body)
 
-    const user: User | null = await UserModel.findOne({
-      email: result?.email,
-    })
+    const user = await cachedUserService.getByEmail(result?.email)
 
     return res
       .status(201)
@@ -101,7 +99,7 @@ const refresh = async (req: Request, res: Response) => {
   try {
     const userId = await userService.verifyUserRefreshToken(req.body)
 
-    const user = await UserModel.findById(userId)
+    const user = await userService.getById(userId)
 
     const accessToken = await jwtHelpers.signAccessToken(
       userId,
@@ -130,29 +128,23 @@ const refresh = async (req: Request, res: Response) => {
 const deleteUser = async (req: JWTRequest, res: Response) => {
   const { id } = req.params
 
-  const { auth } = req
+  const user = await userService.getById(req?.auth?.id)
 
-  const user = req.currentUser
-
-  if (auth?.aud !== id)
+  if (id !== req?.auth?.aud)
     return res
       .status(403)
-      .json({ error: `Not allowed to delete ${req.currentUser.username}` })
+      .json({ error: `Not allowed to delete ${user?.username}` })
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(400).json({ error: `${id} is not valid user id!` })
   }
   try {
-    const userToDelete = await cachedUserService.deleteUser(id)
-
-    await PostModel.deleteMany({ user: user.id })
-
-    if (!userToDelete) return res.status(404).json({ error: 'User not found' })
+    await PostModel.deleteMany({ user: user?.id })
+    await cachedUserService.deleteUser(id)
 
     res.status(204).end()
   } catch (err) {
     if (err instanceof Error) {
-      // console.error(err)
       throw createHttpError.Unauthorized(err.message)
     }
   }

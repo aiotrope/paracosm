@@ -1,30 +1,28 @@
-import { Schema, model, Types, Document } from 'mongoose'
+import mongoose, { Schema, model, Types, Document, Model } from 'mongoose'
 import slugify from 'slugify'
 
 export interface IPost extends Document {
+  id: string
   title: string
   description: string
   entry: string
-  user?: Types.ObjectId
+  user: Types.ObjectId
+  createdAt: Date
+  updatedAt: Date
 }
 
 const PostSchema: Schema = new Schema<IPost>(
   {
     title: {
       type: String,
-      min: 5,
       unique: true,
-      required: true,
+      index: true,
     },
     description: {
       type: String,
-      min: 10,
-      required: true,
     },
     entry: {
       type: String,
-      min: 10,
-      required: true,
     },
     user: {
       type: Schema.Types.ObjectId,
@@ -48,9 +46,17 @@ PostSchema.set('toJSON', {
 })
 
 PostSchema.virtual('slug').get(function () {
-  return slugify(this.name, { lower: true, trim: true })
+  return slugify(this.title, { lower: true, trim: true })
 })
 
-const PostModel = model<IPost>('PostModel', PostSchema)
+PostSchema.pre('deleteMany', { document: true, query: false }, function (next) {
+  // eslint-disable-next-line @typescript-eslint/no-this-alias
+  const target: any = this
+  target?.model('UserModel').deleteMany({ posts: target._id }, next)
+})
+
+const PostModel =
+  (mongoose.models.UserModel as Model<IPost>) ||
+  model<IPost>('PostModel', PostSchema)
 
 export default PostModel

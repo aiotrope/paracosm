@@ -4,7 +4,7 @@ import { expressjwt } from 'express-jwt'
 import environ from '../environ'
 
 import userController from '../controllers/user'
-import authMiddleware from '../middlewares/auth'
+// import authMiddleware from '../middlewares/auth'
 
 const router = express.Router()
 
@@ -20,8 +20,6 @@ router.delete(
     issuer: environ.ISS,
     algorithms: ['HS256'],
   }),
-  authMiddleware.tokenExtractor,
-  authMiddleware.userExtractor,
   userController.deleteUser
 )
 
