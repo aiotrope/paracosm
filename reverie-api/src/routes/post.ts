@@ -32,14 +32,14 @@ router.delete(
   postController.deletePost
 )
 
-router.patch(
+router.put(
   '/posts/:id',
   expressjwt({
     secret: environ.JWT_SECRET,
     issuer: environ.ISS,
     algorithms: ['HS256'],
   }),
-  postController.update
+  postController.updatePost
 )
 
 export default router

@@ -50,9 +50,10 @@ PostSchema.virtual('slug').get(function () {
 })
 
 PostSchema.pre('deleteMany', { document: true, query: false }, function (next) {
-  // eslint-disable-next-line @typescript-eslint/no-this-alias
+  /* eslint-disable-next-line @typescript-eslint/no-this-alias */
   const target: any = this
   target?.model('UserModel').deleteMany({ posts: target._id }, next)
+  /* eslint-enable-next-line @typescript-eslint/no-this-alias */
 })
 
 const PostModel =

@@ -79,7 +79,7 @@ const UpdatePost = BasePost.pick({
   title: true,
   description: true,
   entry: true,
-}).optional()
+})
 
 const InitPost = BasePost.omit({
   message: true,

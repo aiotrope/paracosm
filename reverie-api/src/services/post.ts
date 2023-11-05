@@ -4,7 +4,7 @@ import { generateErrorMessage } from 'zod-error'
 import { sanitize } from 'isomorphic-dompurify'
 import mongoose from 'mongoose'
 
-import PostModel, { IPost } from '../models/post'
+import PostModel from '../models/post'
 import UserModel from '../models/user'
 import schema from '../utils/schema'
 import { CreatePost, UpdatePost, Post } from '../utils/types'
@@ -43,7 +43,7 @@ const create = async (input: CreatePost, userId: string) => {
     return newPost
   }
 }
-const update = async (input: UpdatePost, id: string) => {
+const updatePost = async (input: UpdatePost, id: string) => {
   const validData = await schema.UpdatePost.spa(input)
 
   if (!validData.success) {
@@ -60,14 +60,13 @@ const update = async (input: UpdatePost, id: string) => {
 
   if (foundPost) throw Error('Cannot use the post title provided')
 
-  const filter = { id: id }
+  let updatePost = await PostModel.findById(id)
 
-  const options = validData
+  updatePost!.title = sanitize(validData?.data?.title)
+  updatePost!.description = sanitize(validData?.data?.description)
+  updatePost!.entry = sanitize(validData?.data?.entry)
 
-  const updatePost: IPost | null = await PostModel.findOneAndUpdate(
-    filter,
-    options
-  )
+  await updatePost?.save()
 
   return updatePost
 }
@@ -107,7 +106,7 @@ const postService = {
   getPosts,
   getById,
   deletePost,
-  update,
+  updatePost,
 }
 
 export default postService

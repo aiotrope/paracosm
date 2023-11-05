@@ -13,7 +13,7 @@ import { cacheMethodCalls } from '../utils/cache'
 
 const cachedPostService = cacheMethodCalls(postService, [
   'deletePost',
-  'update',
+  'updatePost',
   'create',
 ])
 
@@ -72,17 +72,17 @@ const create = async (req: JWTRequest, res: Response) => {
   }
 }
 
-const update = async (req: JWTRequest, res: Response) => {
+const updatePost = async (req: JWTRequest, res: Response) => {
   const { id } = req.params
-  const user = await cachedUserService.getById(req?.auth?.aud)
+  const user = await cachedUserService.getById(req?.auth?.id)
 
   const checkPost = await cachedPostService.getById(id)
 
-  if (checkPost?.user?.id !== req?.auth?.aud)
+  if (checkPost?.user?.id !== user?.id)
     throw Error('Not allowed to update post')
 
   try {
-    const result = await cachedPostService.update(req.body, id)
+    const result = await cachedPostService.updatePost(req.body, id)
 
     const post = await cachedPostService.getById(result?.id)
 
@@ -135,7 +135,7 @@ const userController = {
   getPosts,
   getById,
   deletePost,
-  update,
+  updatePost,
 }
 
 export default userController
