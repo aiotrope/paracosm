@@ -1,17 +1,17 @@
 import 'express-async-errors'
-import { DocumentType } from '@typegoose/typegoose'
 import { HydratedDocument } from 'mongoose'
 import createHttpError from 'http-errors'
 import { generateErrorMessage } from 'zod-error'
 import { sanitize } from 'isomorphic-dompurify'
+import bcrypt from 'bcryptjs'
 
-import UserModel from '../models/user'
-import { User, Signup, Login } from '../utils/types'
+import UserModel, { IUser } from '../models/user'
+import { User, _Signup, _Login, RefreshToken } from '../utils/types'
 import jwtHelpers from '../utils/jwtHelpers'
 
 import schema from '../utils/schema'
 
-const create = async (request: Signup) => {
+const create = async (request: _Signup) => {
   const validData = await schema.Signup.spa(request)
 
   if (!validData.success) {
@@ -40,7 +40,7 @@ const create = async (request: Signup) => {
     password: validData.data.confirm,
   }
 
-  const user = new UserModel({
+  const user: HydratedDocument<IUser> = new UserModel({
     email: sanitzedData.email,
     username: sanitzedData.username,
     password: sanitzedData.password,
@@ -65,45 +65,48 @@ const getById = async (id: string) => {
       entry: 1,
       createdAt: 1,
       updatedAt: 1,
+      user: 1,
     })
   if (!user) throw Error('User not found!')
   return user
 }
 
 const getUsers = async () => {
-  const users: User[] = await UserModel.find({}, { password: 0 }).populate(
-    'posts',
-    {
-      id: 1,
-      title: 1,
-      description: 1,
-      entry: 1,
-      createdAt: 1,
-      updatedAt: 1,
-    }
-  )
+  const users: User[] = await UserModel.find({}).populate('posts', {
+    id: 1,
+    title: 1,
+    description: 1,
+    entry: 1,
+    createdAt: 1,
+    updatedAt: 1,
+    user: 1,
+  })
   if (!users) throw Error('Cannot fetch all users!')
   return users
 }
 
-const authenticateUser = async (request: Login) => {
+const authenticateUser = async (request: _Login) => {
   const validData = await schema.Login.spa(request)
 
   if (!validData.success) {
     const errorMessage = generateErrorMessage(
       validData.error.issues,
+
       schema.errorMessageOptions
     )
     throw createHttpError.BadRequest(errorMessage)
   }
 
-  const user: HydratedDocument<User> | null = await UserModel.findOne({
+  const user: IUser | null = await UserModel.findOne({
     email: validData.data.email,
   })
 
-  const correctPassword = await user?.comparePassword(validData.data.password)
+  const correctPassword =
+    user === null
+      ? false
+      : await bcrypt.compare(validData.data.password, user.password)
 
-  if (!correctPassword || !user) throw Error('Incorrect login credentials')
+  if (!(user && correctPassword)) throw Error('Incorrect login credentials')
 
   const sanitzedData = {
     email: sanitize(validData.data.email),
@@ -113,8 +116,8 @@ const authenticateUser = async (request: Login) => {
   return sanitzedData
 }
 
-const verifyUserRefreshToken = async (request: RefreshTokenType) => {
-  const validData = await schema.RefreshTokenSchema.spa(request)
+const verifyUserRefreshToken = async (request: RefreshToken) => {
+  const validData = await schema.RefreshToken.spa(request)
 
   if (!validData.success) {
     const errorMessage = generateErrorMessage(

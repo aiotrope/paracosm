@@ -2,7 +2,8 @@ import 'express-async-errors'
 import { Request, Response } from 'express'
 import createHttpError from 'http-errors'
 import mongoose from 'mongoose'
-import { PostModel, Post, UserModel } from '../models'
+import PostModel, { IPost } from '../models/post'
+import UserModel from '../models/user'
 import postService from '../services/post'
 import { cacheMethodCalls } from '../utils/cache'
 
@@ -14,7 +15,7 @@ const cachedPostService = cacheMethodCalls(postService, [
 
 const getPosts = async (req: Request, res: Response) => {
   try {
-    const posts = await cachedPostService.getUsers()
+    const posts = await cachedPostService.getPosts()
 
     return res.status(200).json(posts)
   } catch (err) {
@@ -50,8 +51,8 @@ const create = async (req: Request, res: Response) => {
 
     const user = req.currentUser
 
-    const post: Post | null = await PostModel.findOne({
-      id: result.id,
+    const post: IPost | null = await PostModel.findOne({
+      id: result?.id,
     }).populate('user', {
       id: 1,
       username: 1,
@@ -77,8 +78,8 @@ const update = async (req: Request, res: Response) => {
   try {
     const result = await cachedPostService.update(req, req.body, id)
 
-    const post: Post | null = await PostModel.findOne({
-      id: result.id,
+    const post: IPost | null = await PostModel.findOne({
+      id: result?.id,
     }).populate('user', {
       id: 1,
       username: 1,
@@ -104,7 +105,7 @@ const deletePost = async (req: Request, res: Response) => {
 
   const user = req.currentUser
 
-  const post: Post | null = await PostModel.findById(id).populate('user', {
+  const post: IPost | null = await PostModel.findById(id).populate('user', {
     id: 1,
   })
 

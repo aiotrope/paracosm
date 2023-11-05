@@ -1,12 +1,13 @@
 import 'express-async-errors'
 import { Request, Response } from 'express'
-import { DocumentType } from '@typegoose/typegoose'
 import mongoose from 'mongoose'
 import createHttpError from 'http-errors'
+import { Request as JWTRequest } from 'express-jwt'
 
 import jwtHelpers from '../utils/jwtHelpers'
-import { UserModel, User, PostModel } from '../models'
-import { PublicUser } from '../utils/schema'
+import PostModel from '../models/post'
+import UserModel from '../models/user'
+import { User } from '../utils/types'
 import userService from '../services/user'
 import { cacheMethodCalls } from '../utils/cache'
 
@@ -47,11 +48,9 @@ const signup = async (req: Request, res: Response) => {
   try {
     const result = await cachedUserService.create(req.body)
 
-    const user: PublicUser | null = await UserModel.findOne({
-      email: result.email,
+    const user: User | null = await UserModel.findOne({
+      email: result?.email,
     })
-
-    // const msg: string = `${user?.email} user account created`
 
     return res
       .status(201)
@@ -68,8 +67,8 @@ const login = async (req: Request, res: Response) => {
   try {
     const result = await cachedUserService.authenticateUser(req.body)
 
-    const user: DocumentType<User> | null = await UserModel.findOne({
-      email: result.email,
+    const user = await UserModel.findOne({
+      email: result?.email,
     })
 
     const accessToken = (await jwtHelpers.signAccessToken(
@@ -102,7 +101,7 @@ const refresh = async (req: Request, res: Response) => {
   try {
     const userId = await userService.verifyUserRefreshToken(req.body)
 
-    const user: DocumentType<User> | null = await UserModel.findById(userId)
+    const user = await UserModel.findById(userId)
 
     const accessToken = await jwtHelpers.signAccessToken(
       userId,
@@ -128,12 +127,14 @@ const refresh = async (req: Request, res: Response) => {
   }
 }
 
-const deleteUser = async (req: Request, res: Response) => {
+const deleteUser = async (req: JWTRequest, res: Response) => {
   const { id } = req.params
+
+  const { auth } = req
 
   const user = req.currentUser
 
-  if (user.id !== id)
+  if (auth?.aud !== id)
     return res
       .status(403)
       .json({ error: `Not allowed to delete ${req.currentUser.username}` })

@@ -103,11 +103,11 @@ const InitUser = BaseUser.omit({
   refresh: true,
   access: true,
   refreshToken: true,
-})
+}).strict()
 
 const User = InitUser.extend({
   posts: z.array(Post).optional(),
-})
+}).strict()
 
 const schema = {
   errorMessageOptions,
@@ -122,6 +122,7 @@ const schema = {
   BasePost,
   UpdatePost,
   Post,
+  InitUser,
 }
 
 export default schema

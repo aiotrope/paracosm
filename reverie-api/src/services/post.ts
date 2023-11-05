@@ -5,12 +5,12 @@ import createHttpError from 'http-errors'
 import { generateErrorMessage } from 'zod-error'
 import { sanitize } from 'isomorphic-dompurify'
 
-import { PostModel, Post } from '../models'
+import PostModel, { IPost } from '../models/post'
+import schema from '../utils/schema'
+import { CreatePost, UpdatePost, Post } from '../utils/types'
 
-import schema, { PostFormType, UpdatePostFormType } from '../utils/schema'
-
-const create = async (req: Request, input: PostFormType) => {
-  const validData = await schema.PostFormSchema.spa(input)
+const create = async (req: Request, input: CreatePost) => {
+  const validData = await schema.CreatePost.spa(input)
 
   const user = req.currentUser
 
@@ -33,7 +33,7 @@ const create = async (req: Request, input: PostFormType) => {
     user: user,
   }
 
-  const post: HydratedDocument<Post> = new PostModel(sanitzedData)
+  const post: HydratedDocument<IPost> = new PostModel(sanitzedData)
 
   await post.save
 
@@ -44,8 +44,8 @@ const create = async (req: Request, input: PostFormType) => {
     return post
   }
 }
-const update = async (req: Request, input: UpdatePostFormType, id: string) => {
-  const validData = await schema.UpdatePostFormSchema.spa(input)
+const update = async (req: Request, input: UpdatePost, id: string) => {
+  const validData = await schema.UpdatePost.spa(input)
 
   const user = req.currentUser
 
@@ -57,7 +57,9 @@ const update = async (req: Request, input: UpdatePostFormType, id: string) => {
     throw createHttpError.BadRequest(errorMessage)
   }
 
-  const foundPost = await PostModel.findOne({ title: validData.data.title })
+  const foundPost: Post | null = await PostModel.findOne({
+    title: validData?.data?.title,
+  })
 
   if (foundPost) throw Error('Cannot use the post title provided')
 
@@ -76,7 +78,7 @@ const update = async (req: Request, input: UpdatePostFormType, id: string) => {
 
   const options = validData
 
-  const updatePost: Post | null = await PostModel.findOneAndUpdate(
+  const updatePost: IPost | null = await PostModel.findOneAndUpdate(
     filter,
     options
   ).populate('user', {
@@ -105,7 +107,14 @@ const getById = async (id: string) => {
 }
 
 const getPosts = async () => {
-  const posts: Post[] | null = await PostModel.find({})
+  const posts: Post[] | null = await PostModel.find({}).populate('user', {
+    id: 1,
+    username: 1,
+    email: 1,
+    createdAt: 1,
+    updatedAt: 1,
+    posts: 1,
+  })
   if (!posts) throw Error('Cannot fetch all posts!')
   return posts
 }

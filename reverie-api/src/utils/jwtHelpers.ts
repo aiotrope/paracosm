@@ -13,7 +13,7 @@ const signAccessToken = (userId: string, username: unknown, email: unknown) =>
     const privateKey: Secret = environ.JWT_SECRET
     // console.log(userId)
     const options = {
-      subject: userId,
+      subject: email,
       issuer: environ.ISS, //* web service api
       expiresIn: environ.EXPIRESIN,
       audience: userId,

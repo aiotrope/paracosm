@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import createHttpError from 'http-errors'
 
-import { UserModel } from '../models'
+import UserModel from '../models/user'
 import jwtHelpers from '../utils/jwtHelpers'
 
 export const tokenExtractor = (

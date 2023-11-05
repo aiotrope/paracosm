@@ -1,13 +1,12 @@
-import { Schema, model, Document, Types } from 'mongoose'
+import { Schema, model, Types, Document } from 'mongoose'
+import slugify from 'slugify'
 
-export type TPost = {
+export interface IPost extends Document {
   title: string
   description: string
   entry: string
-  user: Types.ObjectId
+  user?: Types.ObjectId
 }
-
-export interface IPost extends TPost, Document {}
 
 const PostSchema: Schema = new Schema<IPost>(
   {
@@ -29,7 +28,7 @@ const PostSchema: Schema = new Schema<IPost>(
     },
     user: {
       type: Schema.Types.ObjectId,
-      ref: 'User',
+      ref: 'UserModel',
     },
   },
   {
@@ -45,8 +44,11 @@ PostSchema.set('toJSON', {
     retObject.id = retObject._id.toString()
     delete retObject._id
     delete retObject.__v
-    delete retObject.password
   },
+})
+
+PostSchema.virtual('slug').get(function () {
+  return slugify(this.name, { lower: true, trim: true })
 })
 
 const PostModel = model<IPost>('PostModel', PostSchema)
