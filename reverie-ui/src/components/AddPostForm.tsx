@@ -1,16 +1,18 @@
 import React, { SetStateAction } from 'react'
-import Modal from 'react-bootstrap/Modal'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-// import { useSetAtom, useAtomValue } from 'jotai'
+import { useSetAtom } from 'jotai'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-// import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-hot-toast'
 import FormControl from 'react-bootstrap/FormControl'
+import Modal from 'react-bootstrap/Modal'
 
 import httpService from '../services/http'
-import { userKeys } from '../services/queryKeyFactory'
-// import { LoginType, LoginSchema } from '../schema/schema'
+import { userKeys, postKeys } from '../services/queryKeyFactory'
+import schema from '../types/schema'
+import { CreatePost, CreatePostResponse } from '../types/types'
+import { postsAtom } from '../atoms/store'
 
 interface Props {
   show: boolean
@@ -20,19 +22,31 @@ interface Props {
 
 const AddPostForm = ({ show, onHide }: Props) => {
   const queryClient = useQueryClient()
+
+  const setPosts = useSetAtom(postsAtom)
+
+  const navigate = useNavigate()
+
   const mutation = useMutation({
-    mutationFn: httpService.login,
-    onSuccess: (data) => {
+    mutationFn: httpService.createPost,
+    onSuccess: (data: CreatePostResponse) => {
+      queryClient.invalidateQueries({ queryKey: postKeys.all })
+      queryClient.invalidateQueries({ queryKey: postKeys.lists() })
+      queryClient.invalidateQueries({ queryKey: postKeys.details() })
       queryClient.invalidateQueries({ queryKey: userKeys.lists() })
       queryClient.invalidateQueries({ queryKey: userKeys.details() })
 
       toast.success(data?.message)
+      setPosts((currentValue) => [...currentValue, data])
       reset()
+
+      navigate('/')
     },
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
     onError: (error: any) => {
       toast.error(`${error?.response?.data?.error}`)
     },
+    /* eslint-enable-next-line @typescript-eslint/no-explicit-any */
   })
 
   const {
@@ -41,8 +55,8 @@ const AddPostForm = ({ show, onHide }: Props) => {
     handleSubmit,
     getFieldState,
     formState: { errors },
-  } = useForm<LoginType>({
-    resolver: zodResolver(LoginSchema),
+  } = useForm<CreatePost>({
+    resolver: zodResolver(schema.CreatePost),
     mode: 'all',
     defaultValues: {
       title: '',
@@ -51,8 +65,8 @@ const AddPostForm = ({ show, onHide }: Props) => {
     },
   })
 
-  const onSubmit = (input: LoginType) => {
-    mutation.mutate(input)
+  const onSubmit = async (input: CreatePost) => {
+    mutation.mutateAsync(input)
   }
 
   const fieldStateTitle = getFieldState('title')
@@ -60,7 +74,6 @@ const AddPostForm = ({ show, onHide }: Props) => {
   const fieldStateDescription = getFieldState('description')
 
   const fieldStateEntry = getFieldState('entry')
-
   return (
     <>
       <Modal show={show} onHide={onHide} fullscreen>
@@ -95,7 +108,7 @@ const AddPostForm = ({ show, onHide }: Props) => {
             <label htmlFor="entry">Enter Post</label>
             <textarea
               id="description"
-              rows={5}
+              rows={7}
               placeholder="Enter your post..."
               {...register('entry', { required: true })}
               aria-invalid={fieldStateEntry.isDirty && fieldStateEntry.invalid}

@@ -7,7 +7,7 @@ import mongoose from 'mongoose'
 import PostModel from '../models/post'
 import UserModel from '../models/user'
 import schema from '../utils/schema'
-import { CreatePost, UpdatePost, Post } from '../utils/types'
+import { CreatePost, UpdatePost } from '../utils/types'
 
 const create = async (input: CreatePost, userId: string) => {
   const validData = await schema.CreatePost.spa(input)
@@ -72,28 +72,16 @@ const updatePost = async (input: UpdatePost, id: string) => {
 }
 
 const getById = async (id: string) => {
-  const post: Post | null = await PostModel.findById(id).populate('user', {
-    id: 1,
-    username: 1,
-    email: 1,
-    posts: 1,
-    createdAt: 1,
-    updatedAt: 1,
-  })
+  const post = await PostModel.findById(id).populate('user')
   if (!post) throw Error('Post not found!')
+
   return post
 }
 
 const getPosts = async () => {
-  const posts: Post[] | null = await PostModel.find({}).populate('user', {
-    id: 1,
-    username: 1,
-    email: 1,
-    createdAt: 1,
-    updatedAt: 1,
-    posts: 1,
-  })
+  const posts = await PostModel.find({}).populate('user', { id: 1 })
   if (!posts) throw Error('Cannot fetch all posts!')
+
   return posts
 }
 

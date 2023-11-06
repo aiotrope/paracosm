@@ -7,7 +7,6 @@ import { Request as JWTRequest } from 'express-jwt'
 import jwtHelpers from '../utils/jwtHelpers'
 import PostModel from '../models/post'
 import UserModel from '../models/user'
-// import { User } from '../utils/types'
 import userService from '../services/user'
 import { cacheMethodCalls } from '../utils/cache'
 

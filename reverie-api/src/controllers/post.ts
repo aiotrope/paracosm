@@ -44,7 +44,7 @@ const getById = async (req: Request, res: Response) => {
   }
 
   try {
-    const post = await cachedPostService.getById(id)
+    const post = await postService.getById(id)
 
     return res.status(200).json(post)
   } catch (err) {

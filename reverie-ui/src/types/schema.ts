@@ -13,7 +13,7 @@ const BaseUser = z.object({
   message: z.string().min(13),
   access: z.string().includes('.').trim().min(80),
   refresh: z.string().includes('.').trim().min(80),
-  refreshToken: z.string().trim().min(10),
+  refreshToken: z.string().includes('.').trim().min(50),
   password: z.string().trim().regex(passwordRegex),
   confirm: z.string().trim().regex(passwordRegex),
 })
@@ -56,33 +56,29 @@ const BasePost = z.object({
   entry: z.string().min(10),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
-  message: z.string().min(4),
+  slug: z.string().optional(),
 })
 
 const CreatePost = BasePost.pick({
   title: true,
   description: true,
   entry: true,
-}).strict()
+})
 
 const UpdatePost = BasePost.pick({
   title: true,
   description: true,
   entry: true,
-}).optional()
-
-const InitPost = BasePost.omit({
-  message: true,
 })
 
-const Post = InitPost.extend({
+const Post = BasePost.extend({
   user: z.object({
     id: z.string().min(25),
     username: z.string().trim().regex(usernameRegex),
     email: z.string().email(),
     createdAt: z.coerce.date(),
     updatedAt: z.coerce.date(),
-    posts: z.array(InitPost).optional(),
+    posts: z.array(BasePost),
   }),
 })
 
@@ -99,6 +95,16 @@ const User = InitUser.extend({
   posts: z.array(Post).optional(),
 })
 
+const CreatePostResponse = z.object({
+  message: z.string().trim().min(13),
+  post: Post,
+})
+
+const JWTToken = BaseUser.pick({
+  access: true,
+  refresh: true,
+})
+
 const schema = {
   BaseUser,
   Signup,
@@ -111,6 +117,8 @@ const schema = {
   BasePost,
   UpdatePost,
   Post,
+  CreatePostResponse,
+  JWTToken,
 }
 
 export default schema

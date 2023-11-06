@@ -4,7 +4,8 @@ import { useResetAtom } from 'jotai/utils'
 import { jwtDecode } from 'jwt-decode'
 import { toast } from 'react-hot-toast'
 
-import { jwtAtom } from '../atoms/user'
+import { jwtAtom } from '../atoms/store'
+import { User } from '../types/types'
 
 const AuthTopNav: React.FC = () => {
   const jwt = useAtomValue(jwtAtom)

@@ -67,6 +67,7 @@ const BasePost = z.object({
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
   message: z.string().min(13),
+  slug: z.string().optional(),
 })
 
 const CreatePost = BasePost.pick({
@@ -88,10 +89,6 @@ const InitPost = BasePost.omit({
 const Post = InitPost.extend({
   user: z.object({
     id: z.string().min(25),
-    username: z.string().trim().regex(usernameRegex),
-    email: z.string().email(),
-    createdAt: z.coerce.date(),
-    updatedAt: z.coerce.date(),
     posts: z.array(InitPost).optional(),
   }),
 })
@@ -103,6 +100,9 @@ const InitUser = BaseUser.omit({
   refresh: true,
   access: true,
   refreshToken: true,
+  createdAt: true,
+  updatedAt: true,
+  username: true,
 })
 
 const User = InitUser.extend({

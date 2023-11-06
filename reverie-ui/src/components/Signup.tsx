@@ -8,9 +8,9 @@ import Stack from 'react-bootstrap/Stack'
 import FormControl from 'react-bootstrap/FormControl'
 
 import httpService from '../services/http'
-import { userKeys } from '../services/queryKeyFactory'
+import { userKeys, postKeys } from '../services/queryKeyFactory'
 import schema from '../types/schema'
-import { Signup, SignupResponse } from '../types/types'
+import { _Signup, SignupResponse } from '../types/types'
 
 const Signup: React.FC = () => {
   const queryClient = useQueryClient()
@@ -22,6 +22,8 @@ const Signup: React.FC = () => {
     onSuccess: (data: SignupResponse) => {
       reset()
       toast.success(`${data?.message}`)
+      queryClient.invalidateQueries({ queryKey: userKeys.all })
+      queryClient.invalidateQueries({ queryKey: postKeys.all })
       queryClient.invalidateQueries({ queryKey: userKeys.lists() })
       queryClient.invalidateQueries({ queryKey: userKeys.details() })
 
@@ -40,12 +42,12 @@ const Signup: React.FC = () => {
     handleSubmit,
     getFieldState,
     formState: { errors },
-  } = useForm<Signup>({
+  } = useForm<_Signup>({
     resolver: zodResolver(schema.Signup),
     mode: 'all',
   })
 
-  const onSubmit = async (input: Signup) => {
+  const onSubmit = async (input: _Signup) => {
     const result = await mutate.mutateAsync(input)
     return result
   }

@@ -1,7 +1,7 @@
 import React, { lazy } from 'react'
 import { useAtomValue } from 'jotai'
 
-import { jwtAtom } from '../atoms/user'
+import { jwtAtom } from '../atoms/store'
 
 const AuthTopNav = lazy(() => import('./AuthTopNav'))
 

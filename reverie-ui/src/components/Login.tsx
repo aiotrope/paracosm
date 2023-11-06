@@ -10,9 +10,9 @@ import FormControl from 'react-bootstrap/FormControl'
 
 import httpService from '../services/http'
 import schema from '../types/schema'
-import { Login, LoginResponse } from '../types/types'
-import { userKeys } from '../services/queryKeyFactory'
-import { jwtAtom } from '../atoms/user'
+import { _Login, LoginResponse } from '../types/types'
+import { userKeys, postKeys } from '../services/queryKeyFactory'
+import { jwtAtom } from '../atoms/store'
 
 const Login: React.FC = () => {
   const queryClient = useQueryClient()
@@ -28,6 +28,7 @@ const Login: React.FC = () => {
     onSuccess: (data: LoginResponse) => {
       queryClient.invalidateQueries({ queryKey: userKeys.lists() })
       queryClient.invalidateQueries({ queryKey: userKeys.details() })
+      queryClient.invalidateQueries({ queryKey: postKeys.all })
       setJwt((currentValue) => ({
         ...currentValue,
         access: data.access,
@@ -51,7 +52,7 @@ const Login: React.FC = () => {
     handleSubmit,
     getFieldState,
     formState: { errors },
-  } = useForm<Login>({
+  } = useForm<_Login>({
     resolver: zodResolver(schema.Login),
     mode: 'all',
     defaultValues: {
@@ -60,7 +61,7 @@ const Login: React.FC = () => {
     },
   })
 
-  const onSubmit = (input: Login) => {
+  const onSubmit = (input: _Login) => {
     mutation.mutate(input)
   }
 

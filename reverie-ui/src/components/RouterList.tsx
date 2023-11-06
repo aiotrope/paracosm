@@ -2,7 +2,7 @@ import React, { lazy } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { useAtomValue } from 'jotai'
 
-import { jwtAtom } from '../atoms/user'
+import { jwtAtom } from '../atoms/store'
 
 const Home = lazy(() => import('./Home'))
 const About = lazy(() => import('./About'))
