@@ -1,6 +1,6 @@
 import React, { SetStateAction } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { useSetAtom } from 'jotai'
+// import { useAtom } from 'jotai'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useNavigate } from 'react-router-dom'
@@ -11,8 +11,8 @@ import Modal from 'react-bootstrap/Modal'
 import httpService from '../services/http'
 import { userKeys, postKeys } from '../services/queryKeyFactory'
 import schema from '../types/schema'
-import { CreatePost, CreatePostResponse } from '../types/types'
-import { postsAtom } from '../atoms/store'
+import { CreatePost } from '../types/types'
+// import { postsAtom } from '../atoms/store'
 
 interface Props {
   show: boolean
@@ -23,13 +23,13 @@ interface Props {
 const AddPostForm = ({ show, onHide }: Props) => {
   const queryClient = useQueryClient()
 
-  const setPosts = useSetAtom(postsAtom)
+  // const [posts, setPosts] = useAtom(postsAtom)
 
   const navigate = useNavigate()
 
   const mutation = useMutation({
     mutationFn: httpService.createPost,
-    onSuccess: (data: CreatePostResponse) => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: postKeys.all })
       queryClient.invalidateQueries({ queryKey: postKeys.lists() })
       queryClient.invalidateQueries({ queryKey: postKeys.details() })
@@ -37,7 +37,7 @@ const AddPostForm = ({ show, onHide }: Props) => {
       queryClient.invalidateQueries({ queryKey: userKeys.details() })
 
       toast.success(data?.message)
-      setPosts((currentValue) => [...currentValue, data])
+      // setPosts(posts.concat(data?.post))
       reset()
 
       navigate('/')

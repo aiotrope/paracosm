@@ -19,6 +19,7 @@ router.post(
 )
 
 router.get('/posts/:id', postController.getById)
+router.get('/posts/slug/:id', postController.getSlug)
 
 router.get('/posts', postController.getPosts)
 

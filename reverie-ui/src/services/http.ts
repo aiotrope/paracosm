@@ -6,9 +6,7 @@ import {
   _Login,
   LoginResponse,
   CreatePost,
-  CreatePostResponse,
   JWTToken,
-  Post,
 } from '../types/types'
 
 const signup = async (input: _Signup) => {
@@ -39,13 +37,19 @@ const createPost = async (input: CreatePost) => {
     withCredentials: true,
     headers: { Authorization: `Bearer ${access}`, 'Content-Type': 'application/json' },
   }
-  const { data: response } = await axios.post<CreatePostResponse>(`/api/posts`, input, option)
+  const { data: response } = await axios.post(`/api/posts`, input, option)
 
   return response
 }
 
 const getPosts = async () => {
-  const { data: response } = await axios.get<Post>(`/api/posts`)
+  const { data: response } = await axios.get(`/api/posts`)
+
+  return response
+}
+
+const getPostSlug = async (postId: string) => {
+  const { data: response } = await axios.get(`/api/posts/slug/${postId}`)
 
   return response
 }
@@ -57,6 +61,7 @@ const httpService = {
   getAccessToken,
   getRefreshToken,
   getPosts,
+  getPostSlug,
 }
 
 export default httpService

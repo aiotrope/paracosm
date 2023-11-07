@@ -21,3 +21,5 @@ export type CreatePost = z.infer<typeof schema.CreatePost>
 export type UpdatePost = z.infer<typeof schema.UpdatePost>
 
 export type Post = z.infer<typeof schema.Post>
+
+export type NewPost = z.infer<typeof schema.NewPost>

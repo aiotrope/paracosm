@@ -57,15 +57,7 @@ const getById = async (id: string) => {
     .select({
       password: 0,
     })
-    .populate('posts', {
-      id: 1,
-      title: 1,
-      description: 1,
-      entry: 1,
-      createdAt: 1,
-      updatedAt: 1,
-      user: 1,
-    })
+    .populate('posts')
   if (!user) throw Error('User not found!')
   return user
 }
@@ -75,29 +67,13 @@ const getByEmail = async (email: string) => {
     .select({
       password: 0,
     })
-    .populate('posts', {
-      id: 1,
-      title: 1,
-      description: 1,
-      entry: 1,
-      createdAt: 1,
-      updatedAt: 1,
-      user: 1,
-    })
+    .populate('posts')
   if (!user) throw Error('User not found!')
   return user
 }
 
 const getUsers = async () => {
-  const users = await UserModel.find({}).populate('posts', {
-    id: 1,
-    title: 1,
-    description: 1,
-    entry: 1,
-    createdAt: 1,
-    updatedAt: 1,
-    user: 1,
-  })
+  const users = await UserModel.find({}).populate('posts')
   if (!users) throw Error('Cannot fetch all users!')
   return users
 }

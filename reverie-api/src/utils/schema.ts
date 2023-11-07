@@ -109,6 +109,14 @@ const User = InitUser.extend({
   posts: z.array(Post).optional(),
 })
 
+const NewPost = z.object({
+  id: z.string().min(25),
+  title: z.string().trim().min(5),
+  user: z.object({
+    id: z.string().min(25),
+  }),
+})
+
 const schema = {
   errorMessageOptions,
   BaseUser,
@@ -123,6 +131,7 @@ const schema = {
   UpdatePost,
   Post,
   InitUser,
+  NewPost,
 }
 
 export default schema

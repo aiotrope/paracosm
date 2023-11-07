@@ -74,11 +74,8 @@ const UpdatePost = BasePost.pick({
 const Post = BasePost.extend({
   user: z.object({
     id: z.string().min(25),
-    username: z.string().trim().regex(usernameRegex),
     email: z.string().email(),
-    createdAt: z.coerce.date(),
-    updatedAt: z.coerce.date(),
-    posts: z.array(BasePost),
+    posts: z.array(z.string()),
   }),
 })
 
@@ -93,11 +90,6 @@ const InitUser = BaseUser.omit({
 
 const User = InitUser.extend({
   posts: z.array(Post).optional(),
-})
-
-const CreatePostResponse = z.object({
-  message: z.string().trim().min(13),
-  post: Post,
 })
 
 const JWTToken = BaseUser.pick({
@@ -117,7 +109,6 @@ const schema = {
   BasePost,
   UpdatePost,
   Post,
-  CreatePostResponse,
   JWTToken,
 }
 

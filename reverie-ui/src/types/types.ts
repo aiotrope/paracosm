@@ -16,8 +16,6 @@ export type User = z.infer<typeof schema.User>
 
 export type CreatePost = z.infer<typeof schema.CreatePost>
 
-export type CreatePostResponse = z.infer<typeof schema.CreatePostResponse>
-
 export type UpdatePost = z.infer<typeof schema.UpdatePost>
 
 export type Post = z.infer<typeof schema.Post>

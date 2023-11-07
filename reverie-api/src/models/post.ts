@@ -9,6 +9,7 @@ export interface IPost extends Document {
   user: Types.ObjectId
   createdAt: Date
   updatedAt: Date
+  slug?: string
 }
 
 const PostSchema: Schema = new Schema<IPost>(

@@ -79,7 +79,7 @@ const getById = async (id: string) => {
 }
 
 const getPosts = async () => {
-  const posts = await PostModel.find({}).populate('user', { id: 1 })
+  const posts = await PostModel.find({}).populate('user')
   if (!posts) throw Error('Cannot fetch all posts!')
 
   return posts
@@ -89,12 +89,22 @@ const deletePost = async (id: string) => {
   await PostModel.findByIdAndDelete(id)
 }
 
+const getSlug = async (id: string) => {
+  const post = await PostModel.findById(id)
+  if (!post) throw Error('Post not found!')
+
+  const slug = post?.slug
+
+  return slug
+}
+
 const postService = {
   create,
   getPosts,
   getById,
   deletePost,
   updatePost,
+  getSlug,
 }
 
 export default postService

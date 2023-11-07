@@ -14,8 +14,9 @@ const AuthTopNav: React.FC = () => {
 
   const resetJwt = useResetAtom(jwtAtom)
   const onLogout = () => {
-    resetJwt()
     toast.success(`${decoded?.username} successfully logout`)
+    resetJwt()
+    localStorage.clear()
   }
 
   // console.log('DECODE', decoded)

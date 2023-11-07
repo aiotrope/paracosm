@@ -23,7 +23,7 @@ const cachedUserService = cacheMethodCalls(userService, [
   'deleteUser',
 ])
 
-const getPosts = async (req: Request, res: Response) => {
+const getPosts = async (_req: Request, res: Response) => {
   try {
     const posts = await cachedPostService.getPosts()
 
@@ -130,12 +130,26 @@ const deletePost = async (req: JWTRequest, res: Response) => {
   }
 }
 
+const getSlug = async (req: Request, res: Response) => {
+  const { id } = req.params
+  try {
+    const slug = await cachedPostService.getSlug(id)
+    return res.status(200).json(slug)
+  } catch (err) {
+    if (err instanceof Error) {
+      // console.error(err)
+      throw createHttpError.NotFound(err.message)
+    }
+  }
+}
+
 const userController = {
   create,
   getPosts,
   getById,
   deletePost,
   updatePost,
+  getSlug,
 }
 
 export default userController

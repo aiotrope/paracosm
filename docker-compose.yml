@@ -12,8 +12,6 @@ services:
     secrets:
       - db_username
       - db_password
-    volumes:
-      - mongo_db:/data/db
     ports:
       - 27016:27017
     networks:
