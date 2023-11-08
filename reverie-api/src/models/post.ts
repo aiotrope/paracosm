@@ -1,5 +1,11 @@
 import mongoose, { Schema, model, Types, Document, Model } from 'mongoose'
-import slugify from 'slugify'
+// import slugify from 'slugify'
+
+/* eslint-disable-next-line @typescript-eslint/no-var-requires */
+const slug = require('mongoose-slug-updater')
+/* eslint-enable-next-line @typescript-eslint/no-var-requires */
+
+mongoose.plugin(slug)
 
 export interface IPost extends Document {
   id: string
@@ -18,6 +24,10 @@ const PostSchema: Schema = new Schema<IPost>(
       type: String,
       unique: true,
       index: true,
+    },
+    slug: {
+      type: String,
+      slug: 'title',
     },
     description: {
       type: String,
@@ -46,9 +56,9 @@ PostSchema.set('toJSON', {
   },
 })
 
-PostSchema.virtual('slug').get(function () {
+/* PostSchema.virtual('slug').get(function () {
   return (this.slug = slugify(this.title, { lower: true, trim: true }))
-})
+}) */
 
 PostSchema.pre('deleteMany', { document: true, query: false }, function (next) {
   /* eslint-disable-next-line @typescript-eslint/no-this-alias */

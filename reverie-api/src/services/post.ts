@@ -72,7 +72,10 @@ const updatePost = async (input: UpdatePost, id: string) => {
 }
 
 const getById = async (id: string) => {
-  const post = await PostModel.findById(id).populate('user')
+  const post = await PostModel.findById(id).populate('user', {
+    id: 1,
+    email: 1,
+  })
   if (!post) throw Error('Post not found!')
 
   return {

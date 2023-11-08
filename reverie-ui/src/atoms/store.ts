@@ -1,27 +1,5 @@
 import { atomWithStorage } from 'jotai/utils'
 import { atom } from 'jotai'
-// import { Post } from '../types/types'
-
-// export const store = createStore()
-
-/* interface UserObj {
-  id: string
-  email: string
-  posts: string[]
-}
-
-interface InitPostObj {
-  id: string
-  title: string
-  description: ''
-  entry: string
-  createdAt: Date
-  updatedAt: Date
-}
-
-interface PostObj extends InitPostObj {
-  user: UserObj
-} */
 
 export const jwtAtom = atomWithStorage('jwtAtom', { access: '', refresh: '' })
 
@@ -34,7 +12,6 @@ export const postsAtom = atomWithStorage('postsAtom', [
     createdAt: new Date(),
     updatedAt: new Date(),
     user: { id: '', email: '', posts: [''] },
-    slug: '',
   },
 ])
 
@@ -46,5 +23,4 @@ export const postAtom = atom({
   createdAt: new Date(),
   updatedAt: new Date(),
   user: { id: '', email: '', posts: [''] },
-  slug: '',
 })

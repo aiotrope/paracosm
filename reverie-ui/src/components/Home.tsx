@@ -43,10 +43,10 @@ const Home: React.FC = () => {
       {postsQuery.isSuccess ? (
         <>
           <h1>Posts</h1>
-          {posts.map(({ id, title, description, createdAt, slug }) => (
+          {posts.map(({ id, title, description, createdAt }) => (
             <Row key={id}>
               <Col>
-                <Link to={`/posts/${slug}`}>{title}</Link>
+                <Link to={`/posts/${id}`}>{title}</Link>
                 <p>{description}</p>
                 created:
                 {moment(createdAt, 'YYYYMMDD').fromNow()}
