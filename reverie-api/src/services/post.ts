@@ -43,33 +43,6 @@ const create = async (input: CreatePost, userId: string) => {
     return newPost
   }
 }
-const updatePost = async (input: UpdatePost, id: string) => {
-  const validData = await schema.UpdatePost.spa(input)
-
-  if (!validData.success) {
-    const errorMessage = generateErrorMessage(
-      validData.error.issues,
-      schema.errorMessageOptions
-    )
-    throw createHttpError.BadRequest(errorMessage)
-  }
-
-  const foundPost = await PostModel.findOne({
-    title: validData?.data?.title,
-  })
-
-  if (foundPost) throw Error('Cannot use the post title provided')
-
-  let updatePost = await PostModel.findById(id)
-
-  updatePost!.title = sanitize(validData?.data?.title)
-  updatePost!.description = sanitize(validData?.data?.description)
-  updatePost!.entry = sanitize(validData?.data?.entry)
-
-  await updatePost?.save()
-
-  return updatePost
-}
 
 const getById = async (id: string) => {
   const post = await PostModel.findById(id).populate('user', {
@@ -78,10 +51,7 @@ const getById = async (id: string) => {
   })
   if (!post) throw Error('Post not found!')
 
-  return {
-    post,
-    slug: post.slug,
-  }
+  return post
 }
 
 const getPosts = async () => {
@@ -93,17 +63,30 @@ const getPosts = async () => {
   return posts
 }
 
-const deletePost = async (id: string) => {
-  await PostModel.findByIdAndDelete(id)
+const updatePost = async (input: UpdatePost, postId: string) => {
+  const validData = await schema.UpdatePost.spa(input)
+
+  if (!validData.success) {
+    const errorMessage = generateErrorMessage(
+      validData.error.issues,
+      schema.errorMessageOptions
+    )
+    throw createHttpError.BadRequest(errorMessage)
+  }
+
+  let updatePost = await getById(postId)
+
+  updatePost!.title = sanitize(validData?.data?.title)
+  updatePost!.description = sanitize(validData?.data?.description)
+  updatePost!.entry = sanitize(validData?.data?.entry)
+
+  await updatePost?.save()
+
+  return updatePost
 }
 
-const getSlug = async (id: string) => {
-  const post = await PostModel.findById(id)
-  if (!post) throw Error('Post not found!')
-
-  const slug = post?.slug
-
-  return slug
+const deletePost = async (id: string) => {
+  await PostModel.findByIdAndDelete(id)
 }
 
 const postService = {
@@ -112,7 +95,6 @@ const postService = {
   getById,
   deletePost,
   updatePost,
-  getSlug,
 }
 
 export default postService

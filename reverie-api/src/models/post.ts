@@ -1,36 +1,32 @@
 import mongoose, { Schema, model, Types, Document, Model } from 'mongoose'
-// import slugify from 'slugify'
-
-/* eslint-disable-next-line @typescript-eslint/no-var-requires */
-const slug = require('mongoose-slug-updater')
-/* eslint-enable-next-line @typescript-eslint/no-var-requires */
-
-mongoose.plugin(slug)
+import slugify from 'slugify'
 
 export interface IPost extends Document {
   id: string
   title: string
+  slug: string
   description: string
   entry: string
   user: Types.ObjectId
   createdAt: Date
   updatedAt: Date
-  slug?: string
 }
 
 const PostSchema: Schema = new Schema<IPost>(
   {
     title: {
       type: String,
+      trim: true,
       unique: true,
       index: true,
     },
     slug: {
       type: String,
-      slug: 'title',
+      unique: true,
     },
     description: {
       type: String,
+      trim: true,
     },
     entry: {
       type: String,
@@ -54,6 +50,18 @@ PostSchema.set('toJSON', {
     delete retObject._id
     delete retObject.__v
   },
+})
+
+PostSchema.pre<IPost>('save', async function (next) {
+  const post = this as IPost
+
+  if (!post.isModified('title')) return next()
+
+  const slug = slugify(post.title, { lower: true, trim: true })
+
+  post.slug = slug
+
+  return next()
 })
 
 /* PostSchema.virtual('slug').get(function () {

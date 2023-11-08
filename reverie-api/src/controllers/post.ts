@@ -44,7 +44,7 @@ const getById = async (req: Request, res: Response) => {
   }
 
   try {
-    const post = await postService.getById(id)
+    const post = await cachedPostService.getById(id)
 
     return res.status(200).json(post)
   } catch (err) {
@@ -74,22 +74,25 @@ const create = async (req: JWTRequest, res: Response) => {
 
 const updatePost = async (req: JWTRequest, res: Response) => {
   const { id } = req.params
-  const user = await cachedUserService.getById(req?.auth?.id)
 
-  const checkPost = await cachedPostService.getById(id)
+  const post = await cachedPostService.getById(id)
 
-  if (checkPost?.user?.id !== user?.id)
-    throw Error('Not allowed to update post')
+  if (post?.user?.id !== req?.auth?.aud)
+    throw Error(`Not allowed to update post by ${req?.auth?.aud}`)
+
+  if (post?.title === req.body.title)
+    throw Error('Cannot use the post title provided')
 
   try {
     const result = await cachedPostService.updatePost(req.body, id)
+    if (result) {
+      const updatedPost = await cachedPostService.getById(result?.id)
 
-    const post = await cachedPostService.getById(result?.id)
-
-    return res.status(200).json({
-      message: `${user?.username} updated post: ${post?.title}`,
-      post: post,
-    })
+      return res.status(200).json({
+        message: `${req.auth?.username} updated post: ${updatedPost?.title}`,
+        post: updatedPost,
+      })
+    }
   } catch (err) {
     if (err instanceof Error) {
       throw createHttpError.UnprocessableEntity(err.message)
@@ -130,26 +133,12 @@ const deletePost = async (req: JWTRequest, res: Response) => {
   }
 }
 
-const getSlug = async (req: Request, res: Response) => {
-  const { id } = req.params
-  try {
-    const slug = await cachedPostService.getSlug(id)
-    return res.status(200).json(slug)
-  } catch (err) {
-    if (err instanceof Error) {
-      // console.error(err)
-      throw createHttpError.NotFound(err.message)
-    }
-  }
-}
-
 const userController = {
   create,
   getPosts,
   getById,
   deletePost,
   updatePost,
-  getSlug,
 }
 
 export default userController
