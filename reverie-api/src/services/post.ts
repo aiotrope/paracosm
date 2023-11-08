@@ -75,11 +75,16 @@ const getById = async (id: string) => {
   const post = await PostModel.findById(id).populate('user')
   if (!post) throw Error('Post not found!')
 
-  return post
+  return {
+    post,
+    slug: post.slug,
+  }
 }
 
 const getPosts = async () => {
-  const posts = await PostModel.find({}).populate('user')
+  const posts = await PostModel.find({})
+    .populate('user')
+    .sort({ updatedAt: -1 })
   if (!posts) throw Error('Cannot fetch all posts!')
 
   return posts

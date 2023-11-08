@@ -9,6 +9,7 @@ const About = lazy(() => import('./About'))
 const Signup = lazy(() => import('./Signup'))
 const Login = lazy(() => import('./Login'))
 const Dashboard = lazy(() => import('./Dashboard'))
+const Post = lazy(() => import('./Post'))
 const NotFound = lazy(() => import('./404'))
 
 const RouterList: React.FC = () => {
@@ -26,6 +27,7 @@ const RouterList: React.FC = () => {
         path="/dashboard"
         element={jwt.access !== '' ? <Dashboard /> : <Navigate to="/login" />}
       />
+      <Route path="/posts/:slug" element={<Post />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   )

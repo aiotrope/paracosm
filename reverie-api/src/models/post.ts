@@ -47,7 +47,7 @@ PostSchema.set('toJSON', {
 })
 
 PostSchema.virtual('slug').get(function () {
-  return slugify(this.title, { lower: true, trim: true })
+  return (this.slug = slugify(this.title, { lower: true, trim: true }))
 })
 
 PostSchema.pre('deleteMany', { document: true, query: false }, function (next) {

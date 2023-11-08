@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from 'axios'
 
 import {
@@ -7,6 +8,7 @@ import {
   LoginResponse,
   CreatePost,
   JWTToken,
+  Post,
 } from '../types/types'
 
 const signup = async (input: _Signup) => {
@@ -48,8 +50,14 @@ const getPosts = async () => {
   return response
 }
 
-const getPostSlug = async (postId: string) => {
-  const { data: response } = await axios.get(`/api/posts/slug/${postId}`)
+const getPost = async (postId: string) => {
+  const { data: response } = await axios.get<Post>(`/api/posts/${postId}`)
+
+  return response
+}
+
+const getPostSlug = async (id: string) => {
+  const { data: response } = await axios.get(`/api/posts/slug/${id}`)
 
   return response
 }
@@ -62,6 +70,7 @@ const httpService = {
   getRefreshToken,
   getPosts,
   getPostSlug,
+  getPost,
 }
 
 export default httpService

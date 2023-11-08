@@ -12,5 +12,5 @@ export const postKeys = {
   lists: () => [...postKeys.all, 'list'],
   list: (filters: never) => [...postKeys.lists(), { filters }],
   details: () => [...postKeys.all, 'detail'],
-  detail: (id: unknown) => [...postKeys.details(), id],
+  detail: (id: string) => [...postKeys.details(), id],
 }
