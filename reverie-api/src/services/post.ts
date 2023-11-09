@@ -54,6 +54,16 @@ const getById = async (id: string) => {
   return post
 }
 
+const getBySlug = async (slug: string) => {
+  const post = await PostModel.findOne({ slug: slug }).populate('user', {
+    id: 1,
+    email: 1,
+  })
+  if (!post) throw Error('Post not found!')
+
+  return post
+}
+
 const getPosts = async () => {
   const posts = await PostModel.find({})
     .populate('user')
@@ -74,15 +84,15 @@ const updatePost = async (input: UpdatePost, postId: string) => {
     throw createHttpError.BadRequest(errorMessage)
   }
 
-  let updatePost = await getById(postId)
+  let update = await getById(postId)
 
-  updatePost!.title = sanitize(validData?.data?.title)
-  updatePost!.description = sanitize(validData?.data?.description)
-  updatePost!.entry = sanitize(validData?.data?.entry)
+  update!.title = sanitize(validData?.data?.title)
+  update!.description = sanitize(validData?.data?.description)
+  update!.entry = sanitize(validData?.data?.entry)
 
-  await updatePost?.save()
+  await update?.save()
 
-  return updatePost
+  return update
 }
 
 const deletePost = async (id: string) => {
@@ -95,6 +105,7 @@ const postService = {
   getById,
   deletePost,
   updatePost,
+  getBySlug,
 }
 
 export default postService

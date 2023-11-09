@@ -55,6 +55,21 @@ const getById = async (req: Request, res: Response) => {
   }
 }
 
+const getBySlug = async (req: Request, res: Response) => {
+  const { slug } = req.params
+
+  try {
+    const post = await cachedPostService.getBySlug(slug)
+
+    return res.status(200).json(post)
+  } catch (err) {
+    if (err instanceof Error) {
+      // console.error(err)
+      throw createHttpError.UnprocessableEntity(err.message)
+    }
+  }
+}
+
 const create = async (req: JWTRequest, res: Response) => {
   let user = await cachedUserService.getById(req?.auth?.aud)
 
@@ -139,6 +154,7 @@ const userController = {
   getById,
   deletePost,
   updatePost,
+  getBySlug,
 }
 
 export default userController

@@ -27,7 +27,7 @@ const RouterList: React.FC = () => {
         path="/dashboard"
         element={jwt.access !== '' ? <Dashboard /> : <Navigate to="/login" />}
       />
-      <Route path="/posts/:id" element={<Post />} />
+      <Route path="/posts/slug/:slug" element={<Post />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   )

@@ -18,14 +18,14 @@ import { postAtom } from '../atoms/store'
 
 const Post: React.FC = () => {
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  const { id } = useParams() as any
+  const { slug } = useParams() as any
   /* eslint-enable-next-line @typescript-eslint/no-explicit-any */
 
   const [post, setPost] = useAtom(postAtom)
 
   const postQuery = useQuery({
-    queryKey: [postKeys.detail(id), id],
-    queryFn: () => httpService.getPost(id),
+    queryKey: [postKeys.detail(slug), slug],
+    queryFn: () => httpService.getPostSlug(slug),
   })
 
   const isMounted = useRef(true)

@@ -56,8 +56,8 @@ const getPost = async (postId: string) => {
   return response
 }
 
-const getPostSlug = async (id: string) => {
-  const { data: response } = await axios.get(`/api/posts/slug/${id}`)
+const getPostSlug = async (slug: string) => {
+  const { data: response } = await axios.get(`/api/posts/slug/${slug}`)
 
   return response
 }

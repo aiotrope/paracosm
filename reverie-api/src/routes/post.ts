@@ -20,6 +20,8 @@ router.post(
 
 router.get('/posts/:id', postController.getById)
 
+router.get('/posts/slug/:slug', postController.getBySlug)
+
 router.get('/posts', postController.getPosts)
 
 router.delete(

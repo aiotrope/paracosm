@@ -12,6 +12,7 @@ export const postsAtom = atomWithStorage('postsAtom', [
     createdAt: new Date(),
     updatedAt: new Date(),
     user: { id: '', email: '', posts: [''] },
+    slug: '',
   },
 ])
 
@@ -23,4 +24,5 @@ export const postAtom = atom({
   createdAt: new Date(),
   updatedAt: new Date(),
   user: { id: '', email: '', posts: [''] },
+  slug: '',
 })
