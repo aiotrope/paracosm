@@ -65,18 +65,22 @@ const CreatePost = BasePost.pick({
   entry: true,
 })
 
-const UpdatePost = BasePost.pick({
-  title: true,
-  description: true,
-  entry: true,
-})
+const UpdatePost = CreatePost.partial()
+
+const UpdatePostResponse = BaseUser.pick({
+  message: true,
+}).strict()
 
 const Post = BasePost.extend({
   user: z.object({
     id: z.string().min(25),
     email: z.string().email(),
-    posts: z.array(z.string()),
   }),
+})
+
+const PartialUser = BaseUser.pick({
+  id: true,
+  email: true,
 })
 
 const InitUser = BaseUser.omit({
@@ -97,6 +101,10 @@ const JWTToken = BaseUser.pick({
   refresh: true,
 })
 
+const ObtainRefresh = BaseUser.pick({
+  refreshToken: true,
+})
+
 const schema = {
   BaseUser,
   Signup,
@@ -110,6 +118,9 @@ const schema = {
   UpdatePost,
   Post,
   JWTToken,
+  UpdatePostResponse,
+  PartialUser,
+  ObtainRefresh,
 }
 
 export default schema

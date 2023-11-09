@@ -1,6 +1,8 @@
 import React, { SetStateAction } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-// import { useAtom } from 'jotai'
+// import { useAtom, useSetAtom } from 'jotai'
+import axios from 'axios'
+// import { useParams } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useNavigate } from 'react-router-dom'
@@ -11,32 +13,56 @@ import Modal from 'react-bootstrap/Modal'
 import httpService from '../services/http'
 import { userKeys, postKeys } from '../services/queryKeyFactory'
 import schema from '../types/schema'
-import { CreatePost } from '../types/types'
+import { UpdatePost, UpdatePostResponse, PartialUser } from '../types/types'
 // import { postsAtom } from '../atoms/store'
 
 interface Props {
   show: boolean
   onHide: () => void
+  postId: string
+  postTitle: string
+  postDescription: string
+  postEntry: string
+  user: PartialUser
   setShow: React.Dispatch<SetStateAction<boolean>>
 }
 
-const UpdatePostForm = ({ show, onHide }: Props) => {
+const UpdatePostForm = ({
+  show,
+  onHide,
+  postId,
+  postTitle,
+  postDescription,
+  postEntry,
+  user,
+}: Props) => {
   const queryClient = useQueryClient()
-
-  // const [posts, setPosts] = useAtom(postsAtom)
 
   const navigate = useNavigate()
 
   const mutation = useMutation({
-    mutationFn: httpService.createPost,
-    onSuccess: (data) => {
+    mutationFn: async (formData: UpdatePost) => {
+      const access = httpService.getAccessToken()
+      const option = {
+        withCredentials: true,
+        headers: { Authorization: `Bearer ${access}`, 'Content-Type': 'application/json' },
+      }
+      const { data: response } = await axios.patch<UpdatePostResponse>(
+        `/api/posts/${postId}`,
+        formData,
+        option
+      )
+
+      return response
+    },
+    onSuccess: (data: UpdatePostResponse) => {
       queryClient.invalidateQueries({ queryKey: postKeys.all })
       queryClient.invalidateQueries({ queryKey: postKeys.lists() })
       queryClient.invalidateQueries({ queryKey: postKeys.details() })
       queryClient.invalidateQueries({ queryKey: userKeys.lists() })
       queryClient.invalidateQueries({ queryKey: userKeys.details() })
 
-      toast.success(data?.message)
+      toast.success(data.message)
       // setPosts(posts.concat(data?.post))
       reset()
 
@@ -55,8 +81,8 @@ const UpdatePostForm = ({ show, onHide }: Props) => {
     handleSubmit,
     getFieldState,
     formState: { errors },
-  } = useForm<CreatePost>({
-    resolver: zodResolver(schema.CreatePost),
+  } = useForm<UpdatePost>({
+    resolver: zodResolver(schema.UpdatePost),
     mode: 'all',
     defaultValues: {
       title: '',
@@ -65,8 +91,24 @@ const UpdatePostForm = ({ show, onHide }: Props) => {
     },
   })
 
-  const onSubmit = async (input: CreatePost) => {
-    mutation.mutateAsync(input)
+  /*  useEffect(() => {
+    let defaultValues: UpdatePost = {
+      title: '',
+      description: '',
+      entry: '',
+    }
+    defaultValues.title = postTitle
+    defaultValues.description = postDescription
+    defaultValues.entry = postEntry
+    reset({ ...defaultValues })
+  }, [postDescription, postEntry, postTitle, reset]) */
+
+  const onSubmit = async (input: UpdatePost) => {
+    mutation.mutateAsync({
+      title: input.title,
+      description: input.description,
+      entry: input.entry,
+    })
   }
 
   const fieldStateTitle = getFieldState('title')
@@ -74,11 +116,15 @@ const UpdatePostForm = ({ show, onHide }: Props) => {
   const fieldStateDescription = getFieldState('description')
 
   const fieldStateEntry = getFieldState('entry')
+
+  console.log(user.email)
   return (
     <>
       <Modal show={show} onHide={onHide} fullscreen>
         <Modal.Header closeButton>
-          <Modal.Title>Update Post</Modal.Title>
+          <Modal.Title>
+            Update Post: {postTitle} by: {user.email}
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <form onSubmit={handleSubmit(onSubmit)} spellCheck="false" noValidate>
@@ -86,10 +132,11 @@ const UpdatePostForm = ({ show, onHide }: Props) => {
             <input
               type="text"
               id="title"
-              placeholder="Enter post title"
+              placeholder={postTitle}
               {...register('title', { required: true })}
               aria-invalid={fieldStateTitle.invalid && fieldStateTitle.isDirty}
               className={`${errors.title?.message ? 'is-invalid' : ''} `}
+              value={postTitle}
             />
             <FormControl.Feedback type="invalid">
               {fieldStateTitle?.error?.message}
@@ -99,6 +146,7 @@ const UpdatePostForm = ({ show, onHide }: Props) => {
               id="description"
               placeholder="Enter description"
               {...register('description', { required: true })}
+              value={postDescription}
               aria-invalid={fieldStateDescription.isDirty && fieldStateDescription.invalid}
               className={`${errors.description?.message ? 'is-invalid' : ''} `}
             ></textarea>
@@ -111,6 +159,7 @@ const UpdatePostForm = ({ show, onHide }: Props) => {
               rows={7}
               placeholder="Enter your post..."
               {...register('entry', { required: true })}
+              value={postEntry}
               aria-invalid={fieldStateEntry.isDirty && fieldStateEntry.invalid}
               className={`${errors.entry?.message ? 'is-invalid' : ''} `}
             ></textarea>
@@ -119,7 +168,7 @@ const UpdatePostForm = ({ show, onHide }: Props) => {
             </FormControl.Feedback>
 
             <div className="my-3">
-              <button aria-busy={mutation.isPending}>Submit</button>
+              <button aria-busy={mutation.isPending}>UPDATE</button>
             </div>
           </form>
         </Modal.Body>

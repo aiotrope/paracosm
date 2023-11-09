@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-hot-toast'
 import FormControl from 'react-bootstrap/FormControl'
 import Modal from 'react-bootstrap/Modal'
+import { sanitize } from 'isomorphic-dompurify'
 
 import httpService from '../services/http'
 import { userKeys, postKeys } from '../services/queryKeyFactory'
@@ -66,7 +67,12 @@ const AddPostForm = ({ show, onHide }: Props) => {
   })
 
   const onSubmit = async (input: CreatePost) => {
-    mutation.mutateAsync(input)
+    const sanitizedData = {
+      title: sanitize(input.title),
+      description: sanitize(input.description),
+      entry: sanitize(input.entry),
+    }
+    mutation.mutateAsync(sanitizedData)
   }
 
   const fieldStateTitle = getFieldState('title')

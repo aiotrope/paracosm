@@ -23,6 +23,6 @@ export const postAtom = atom({
   entry: '',
   createdAt: new Date(),
   updatedAt: new Date(),
-  user: { id: '', email: '', posts: [''] },
+  user: { id: '', email: '' },
   slug: '',
 })

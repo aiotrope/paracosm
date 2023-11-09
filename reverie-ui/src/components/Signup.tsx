@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useNavigate, Link } from 'react-router-dom'
 import { toast } from 'react-hot-toast'
+import { sanitize } from 'isomorphic-dompurify'
 import Stack from 'react-bootstrap/Stack'
 import FormControl from 'react-bootstrap/FormControl'
 
@@ -48,7 +49,13 @@ const Signup: React.FC = () => {
   })
 
   const onSubmit = async (input: _Signup) => {
-    const result = await mutate.mutateAsync(input)
+    const sanitizedData = {
+      username: sanitize(input.username),
+      email: sanitize(input.email),
+      password: input.password,
+      confirm: input.confirm,
+    }
+    const result = await mutate.mutateAsync(sanitizedData)
     return result
   }
 

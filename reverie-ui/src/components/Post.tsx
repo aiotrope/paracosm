@@ -22,7 +22,6 @@ const Post: React.FC = () => {
   /* eslint-enable-next-line @typescript-eslint/no-explicit-any */
 
   const [post, setPost] = useAtom(postAtom)
-
   const postQuery = useQuery({
     queryKey: [postKeys.detail(slug), slug],
     queryFn: () => httpService.getPostSlug(slug),
@@ -54,7 +53,7 @@ const Post: React.FC = () => {
               <h2>Post</h2>
               <p>{post?.title}</p>
               <p>by: {post.user.email}</p>
-              <p>created: {moment(post.createdAt, 'YYYYMMDD').fromNow()}</p>
+              <p>created: {moment(post.createdAt.toString()).format('LL')}</p>
               <ReactMarkdown rehypePlugins={[rehypeRaw]} remarkPlugins={[gfm]}>
                 {post?.entry}
               </ReactMarkdown>

@@ -26,8 +26,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "strictPropertyInitialization": false,
-    "noImplicitAny": true,
-    "strictNullChecks": true
   },
   "include": ["src"],
   "exclude": ["node_modules", "src/test", "reverie-api/", "dist"],

@@ -95,9 +95,6 @@ const updatePost = async (req: JWTRequest, res: Response) => {
   if (post?.user?.id !== req?.auth?.aud)
     throw Error(`Not allowed to update post by ${req?.auth?.aud}`)
 
-  if (post?.title === req.body.title)
-    throw Error('Cannot use the post title provided')
-
   try {
     const result = await cachedPostService.updatePost(req.body, id)
     if (result) {
@@ -105,7 +102,6 @@ const updatePost = async (req: JWTRequest, res: Response) => {
 
       return res.status(200).json({
         message: `${req.auth?.username} updated post: ${updatedPost?.title}`,
-        post: updatedPost,
       })
     }
   } catch (err) {

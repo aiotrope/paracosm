@@ -18,6 +18,12 @@ export type CreatePost = z.infer<typeof schema.CreatePost>
 
 export type UpdatePost = z.infer<typeof schema.UpdatePost>
 
+export type PartialUser = z.infer<typeof schema.PartialUser>
+
 export type Post = z.infer<typeof schema.Post>
 
 export type JWTToken = z.infer<typeof schema.JWTToken>
+
+export type ObtainRefresh = z.infer<typeof schema.ObtainRefresh>
+
+export type UpdatePostResponse = z.infer<typeof schema.UpdatePostResponse>

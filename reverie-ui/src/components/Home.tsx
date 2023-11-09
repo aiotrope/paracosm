@@ -11,7 +11,7 @@ import Col from 'react-bootstrap/Col'
 import httpService from '../services/http'
 import { postKeys } from '../services/queryKeyFactory'
 import { postsAtom } from '../atoms/store'
-// import { User } from '../types/types'
+// import { Post } from '../types/types'
 
 const Home: React.FC = () => {
   const [posts, setPosts] = useAtom(postsAtom)
@@ -48,8 +48,7 @@ const Home: React.FC = () => {
               <Col>
                 <Link to={`/posts/slug/${slug}`}>{title}</Link>
                 <p>{description}</p>
-                created:
-                {moment(createdAt, 'YYYYMMDD').fromNow()}
+                created: {moment(createdAt.toString()).fromNow()}
               </Col>
             </Row>
           ))}

@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useNavigate, Link } from 'react-router-dom'
 import { toast } from 'react-hot-toast'
+import { sanitize } from 'isomorphic-dompurify'
 import Stack from 'react-bootstrap/Stack'
 import FormControl from 'react-bootstrap/FormControl'
 
@@ -61,8 +62,12 @@ const Login: React.FC = () => {
     },
   })
 
-  const onSubmit = (input: _Login) => {
-    mutation.mutate(input)
+  const onSubmit = async (input: _Login) => {
+    const sanitizedData = {
+      email: sanitize(input.email),
+      password: input.password,
+    }
+    mutation.mutateAsync(sanitizedData)
   }
 
   const fieldStateEmail = getFieldState('email')
