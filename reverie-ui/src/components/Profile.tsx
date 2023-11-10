@@ -13,7 +13,7 @@ import { userKeys, postKeys } from '../services/queryKeyFactory'
 import { jwtAtom } from '../atoms/store'
 import { User } from '../types/types'
 
-const Me: React.FC = () => {
+const Profile: React.FC = () => {
   const queryClient = useQueryClient()
 
   const [userId, setUserId] = React.useState('')
@@ -73,4 +73,4 @@ const Me: React.FC = () => {
   )
 }
 
-export default Me
+export default Profile

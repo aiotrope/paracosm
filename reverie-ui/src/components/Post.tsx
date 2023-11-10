@@ -14,8 +14,6 @@ import httpService from '../services/http'
 import { postKeys } from '../services/queryKeyFactory'
 import { postAtom } from '../atoms/store'
 
-// import { Post } from '../types/types'
-
 const Post: React.FC = () => {
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   const { slug } = useParams() as any

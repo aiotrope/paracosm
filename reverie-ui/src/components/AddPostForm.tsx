@@ -1,6 +1,5 @@
 import React, { SetStateAction } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-// import { useAtom } from 'jotai'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useNavigate } from 'react-router-dom'
@@ -23,8 +22,6 @@ interface Props {
 
 const AddPostForm = ({ show, onHide }: Props) => {
   const queryClient = useQueryClient()
-
-  // const [posts, setPosts] = useAtom(postsAtom)
 
   const navigate = useNavigate()
 

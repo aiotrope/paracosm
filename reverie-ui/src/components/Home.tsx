@@ -11,7 +11,6 @@ import Col from 'react-bootstrap/Col'
 import httpService from '../services/http'
 import { postKeys } from '../services/queryKeyFactory'
 import { postsAtom } from '../atoms/store'
-// import { Post } from '../types/types'
 
 const Home: React.FC = () => {
   const [posts, setPosts] = useAtom(postsAtom)

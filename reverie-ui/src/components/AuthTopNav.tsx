@@ -3,7 +3,7 @@ import { useAtomValue } from 'jotai'
 import { useResetAtom } from 'jotai/utils'
 import { jwtDecode } from 'jwt-decode'
 import { toast } from 'react-hot-toast'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, NavLink } from 'react-router-dom'
 
 import { jwtAtom } from '../atoms/store'
 import { User } from '../types/types'
@@ -27,16 +27,17 @@ const AuthTopNav: React.FC = () => {
   return (
     <ul>
       <li>
-        <a href={'/about'}>About</a>
+        <NavLink to={'/about'}>About</NavLink>
       </li>
       <li>
-        <a href={'/dashboard'}>Dashboard</a>
+        <NavLink to={'/dashboard'}>Dashboard</NavLink>
       </li>
       <li>
-        <a href={'/me'} role="button" className="secondary">
+        <NavLink to={'/profile'} role="button" className="secondary">
           {decoded.username}
-        </a>
+        </NavLink>
       </li>
+
       <li>
         <button onClick={onLogout} className="outline">
           Logout

@@ -1,6 +1,6 @@
 import React from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { useSetAtom, useAtomValue } from 'jotai'
+import { useSetAtom } from 'jotai'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useNavigate, Link } from 'react-router-dom'
@@ -25,8 +25,6 @@ const Login: React.FC = () => {
 
   const setExp = useSetAtom(expAtom)
 
-  const jwt = useAtomValue(jwtAtom)
-
   const mutation = useMutation({
     mutationFn: httpService.login,
     onSuccess: (data: LoginResponse) => {
@@ -50,8 +48,6 @@ const Login: React.FC = () => {
       toast.error(`${error?.response?.data?.error}`)
     },
   })
-
-  console.log(jwt.access)
 
   const {
     register,
