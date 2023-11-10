@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import axios from 'axios'
 import { useAtomValue } from 'jotai'
 import { useResetAtom } from 'jotai/utils'
 import { jwtDecode } from 'jwt-decode'
@@ -24,16 +23,13 @@ const Profile: React.FC = () => {
 
   const navigate = useNavigate()
 
-  const access = httpService.getAccessToken()
+  // const access = httpService.getAccessToken()
 
   const resetJwt = useResetAtom(jwtAtom)
 
   const mutation: any = useMutation({
     mutationFn: async () =>
-      await axios.delete(`/api/users/${userId}`, {
-        withCredentials: true,
-        headers: { Authorization: `Bearer ${access}`, 'Content-Type': 'application/json' },
-      }),
+      await httpService.http<User>({ method: 'DELETE', url: `/api/users/${userId}` }),
     onSuccess: () => {
       queryClient.removeQueries({ queryKey: userKeys.detail(userId) })
       queryClient.invalidateQueries({ queryKey: userKeys.all })

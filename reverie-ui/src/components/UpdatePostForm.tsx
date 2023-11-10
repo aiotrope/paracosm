@@ -1,6 +1,5 @@
 import React, { SetStateAction, useEffect } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import axios from 'axios'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useNavigate } from 'react-router-dom'
@@ -39,16 +38,13 @@ const UpdatePostForm = ({
 
   const mutation = useMutation({
     mutationFn: async (formData: UpdatePost) => {
-      const access = httpService.getAccessToken()
-      const option = {
-        withCredentials: true,
-        headers: { Authorization: `Bearer ${access}`, 'Content-Type': 'application/json' },
-      }
-      const { data: response } = await axios.patch<UpdatePostResponse>(
-        `/api/posts/${postId}`,
-        formData,
-        option
-      )
+      // const access = httpService.getAccessToken()
+
+      const { data: response } = await httpService.http<UpdatePostResponse>({
+        method: 'PATCH',
+        url: `/api/posts/${postId}`,
+        data: formData,
+      })
 
       return response
     },

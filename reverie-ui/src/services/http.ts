@@ -6,76 +6,108 @@ import {
   _Login,
   LoginResponse,
   CreatePost,
-  JWTToken,
   Post,
   ObtainRefresh,
   ObtainRefreshResponse,
 } from '../types/types'
 
+const getAccessToken = () => {
+  const jwtAtom = localStorage.getItem('jwtAtom')
+  let token = jwtAtom ? JSON.parse(jwtAtom) : null
+  if (token) return token.access
+}
+
+const getRefreshToken = () => {
+  const jwtAtom = localStorage.getItem('jwtAtom')
+  let token = jwtAtom ? JSON.parse(jwtAtom) : null
+  if (token) return token.refresh
+}
+
+const http = axios.create({
+  headers: {
+    Accept: 'application/json',
+  },
+  timeout: 100000,
+})
+
+// Interceptor
+http.interceptors.request.use(
+  (config) => {
+    const token = getAccessToken()
+
+    if (token) {
+      config.headers['Authorization'] = 'Bearer ' + `${token}`
+    } else {
+      config.headers['Content-Type'] = 'application/json'
+    }
+
+    return config
+  },
+  (error) => {
+    return Promise.reject(error)
+  }
+)
+
+http.interceptors.response.use((res) => {
+  return res
+})
+
 const signup = async (input: _Signup) => {
-  const { data: response } = await axios.post<SignupResponse>(`/api/signup`, input)
+  const { data: response } = await http<SignupResponse>({
+    method: 'POST',
+    url: '/api/signup',
+    data: input,
+  })
 
   return response
 }
 
 const login = async (input: _Login) => {
-  const { data: response } = await axios.post<LoginResponse>(`/api/login`, input)
+  const { data: response } = await http<LoginResponse>({
+    method: 'POST',
+    url: '/api/login',
+    data: input,
+  })
 
   return response
 }
 
-const getAccessToken = () => {
-  const token: JWTToken = JSON.parse(localStorage.getItem('jwtAtom') || '')
-  return token?.access
-}
-
-const getRefreshToken = () => {
-  const token: JWTToken = JSON.parse(localStorage.getItem('jwtAtom') || '')
-  return token?.refresh
-}
-
 const createPost = async (input: CreatePost) => {
-  const access = getAccessToken()
-  const option = {
-    withCredentials: true,
-    headers: { Authorization: `Bearer ${access}`, 'Content-Type': 'application/json' },
-  }
-  const { data: response } = await axios.post(`/api/posts`, input, option)
+  const { data: response } = await http({ method: 'POST', url: '/api/posts', data: input })
 
   return response
 }
 
 const getPosts = async () => {
-  const { data: response } = await axios.get(`/api/posts`)
+  const { data: response } = await http({ method: 'GET', url: '/api/posts' })
 
   return response
 }
 
 const getPost = async (postId: string) => {
-  const { data: response } = await axios.get<Post>(`/api/posts/${postId}`)
+  const { data: response } = await http<Post>({ method: 'GET', url: `/api/posts/${postId}` })
 
   return response
 }
 
 const getPostSlug = async (slug: string) => {
-  const { data: response } = await axios.get(`/api/posts/slug/${slug}`)
+  const { data: response } = await http({ method: 'GET', url: `/api/posts/slug/${slug}` })
 
   return response
 }
 
 const deletePost = async (postId: string) => {
-  const access = getAccessToken()
-  const option = {
-    withCredentials: true,
-    headers: { Authorization: `Bearer ${access}`, 'Content-Type': 'application/json' },
-  }
-  const { data: response } = await axios.delete(`/api/posts/${postId}`, option)
+  const { data: response } = await http({ method: 'DELETE', url: `/api/posts/${postId}` })
 
   return response
 }
 
 const obtainRefresh = async (input: ObtainRefresh) => {
-  const { data: response } = await axios.post<ObtainRefreshResponse>(`/api/refresh`, input)
+  const { data: response } = await http<ObtainRefreshResponse>({
+    method: 'POST',
+    url: `/api/refresh`,
+    data: input,
+  })
 
   return response
 }
@@ -113,6 +145,7 @@ const httpService = {
   obtainRefresh,
   createObtainRefresh,
   deletePost,
+  http,
 }
 
 export default httpService

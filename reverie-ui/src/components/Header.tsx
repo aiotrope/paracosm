@@ -1,5 +1,6 @@
 import React, { lazy } from 'react'
 import { useAtomValue } from 'jotai'
+import { NavLink } from 'react-router-dom'
 
 import { jwtAtom } from '../atoms/store'
 
@@ -15,9 +16,9 @@ const Header: React.FC = () => {
       <nav>
         <ul>
           <li>
-            <a href={'/'}>
+            <NavLink to={'/'}>
               <strong>Reverie</strong>
-            </a>
+            </NavLink>
           </li>
         </ul>
         {jwt.access !== '' ? <AuthTopNav /> : <UnauthTopNav />}

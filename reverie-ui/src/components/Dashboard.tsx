@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { lazy } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import axios from 'axios'
 import { useAtomValue } from 'jotai'
 import { jwtDecode } from 'jwt-decode'
 import { Link, useNavigate } from 'react-router-dom'
@@ -21,9 +20,12 @@ const UpdatePostForm = lazy(() => import('./UpdatePostForm'))
 
 const Dashboard: React.FC = () => {
   const [show, setShow] = React.useState(false)
+  const [showUpdate, setShowUpdate] = React.useState(false)
   const [postId, setPostId] = React.useState('')
   const handleClose = (): void => setShow(false)
   const handleShow = (): void => setShow(true)
+  const handleCloseUpdate = (): void => setShowUpdate(false)
+  const handleShowUpdate = (): void => setShowUpdate(true)
 
   const queryClient = useQueryClient()
 
@@ -33,7 +35,7 @@ const Dashboard: React.FC = () => {
 
   const decoded: User = jwtDecode(jwt.access)
 
-  const access = httpService.getAccessToken()
+  // const access = httpService.getAccessToken()
 
   const navigate = useNavigate()
 
@@ -41,10 +43,7 @@ const Dashboard: React.FC = () => {
 
   const deleteMutation: any = useMutation({
     mutationFn: async () =>
-      await axios.delete(`/api/posts/${postId}`, {
-        withCredentials: true,
-        headers: { Authorization: `Bearer ${access}`, 'Content-Type': 'application/json' },
-      }),
+      await httpService.http({ method: 'DELETE', url: `/api/posts/${postId}` }),
     onSuccess: () => {
       queryClient.removeQueries({ queryKey: postKeys.detail(postId) })
       queryClient.invalidateQueries({ queryKey: postKeys.all })
@@ -94,13 +93,13 @@ const Dashboard: React.FC = () => {
             {moment(createdAt).format('LL')}
           </div>
           <div>
-            <button onClick={handleShow} className="outline">
+            <button onClick={handleShowUpdate} className="secondary">
               UPDATE POST
             </button>
             <UpdatePostForm
-              show={show}
-              onHide={handleClose}
-              setShow={setShow}
+              show={showUpdate}
+              onHide={handleCloseUpdate}
+              setShow={setShowUpdate}
               postId={id}
               postTitle={title}
               postDescription={description}
@@ -109,7 +108,7 @@ const Dashboard: React.FC = () => {
             />
           </div>
           <div>
-            <button onClick={handleClickDelete} id={id} className="contrast">
+            <button onClick={handleClickDelete} id={id} className="secondary outline">
               DELETE POST
             </button>
           </div>

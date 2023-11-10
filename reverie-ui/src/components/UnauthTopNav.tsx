@@ -1,21 +1,22 @@
 import React from 'react'
+import { NavLink } from 'react-router-dom'
 
 const UnauthTopNav: React.FC = () => {
   return (
     <ul>
       <li>
-        <a href={'/'}>Home</a>
+        <NavLink to={'/'}>Home</NavLink>
       </li>
       <li>
-        <a href={'/about'}>About</a>
+        <NavLink to={'/about'}>About</NavLink>
       </li>
       <li>
-        <a href={'/signup'}>Signup</a>
+        <NavLink to={'/signup'}>Signup</NavLink>
       </li>
       <li>
-        <a href={'/login'} role="button">
+        <NavLink to={'/login'} role="button">
           Login
-        </a>
+        </NavLink>
       </li>
     </ul>
   )

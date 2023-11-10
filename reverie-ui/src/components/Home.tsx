@@ -37,11 +37,14 @@ const Home: React.FC = () => {
     fetchPosts()
   }, [postsQuery?.data, postsQuery?.isSuccess, setPosts])
 
+  const token = localStorage.getItem('jwtAtom')
+  let ab = token ? JSON.parse(token) : null
   return (
     <Stack>
       {postsQuery.isSuccess ? (
         <>
           <h1>Posts</h1>
+          <p>{ab?.access}</p>
           {posts.map(({ id, title, description, createdAt, slug }) => (
             <Row key={id}>
               <Col>
