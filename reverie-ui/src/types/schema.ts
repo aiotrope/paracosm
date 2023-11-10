@@ -56,7 +56,7 @@ const BasePost = z.object({
   entry: z.string().min(10),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
-  slug: z.string().optional(),
+  slug: z.string(),
 })
 
 const CreatePost = BasePost.pick({
@@ -105,6 +105,11 @@ const ObtainRefresh = BaseUser.pick({
   refreshToken: true,
 })
 
+const ObtainRefreshResponse = BaseUser.pick({
+  access: true,
+  refresh: true,
+})
+
 const schema = {
   BaseUser,
   Signup,
@@ -121,6 +126,7 @@ const schema = {
   UpdatePostResponse,
   PartialUser,
   ObtainRefresh,
+  ObtainRefreshResponse,
 }
 
 export default schema

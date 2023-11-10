@@ -9,6 +9,7 @@ import {
   JWTToken,
   Post,
   ObtainRefresh,
+  ObtainRefreshResponse,
 } from '../types/types'
 
 const signup = async (input: _Signup) => {
@@ -63,9 +64,30 @@ const getPostSlug = async (slug: string) => {
 }
 
 const obtainRefresh = async (input: ObtainRefresh) => {
-  const { data: response } = await axios.post<LoginResponse>(`/api/refresh`, input)
+  const { data: response } = await axios.post<ObtainRefreshResponse>(`/api/refresh`, input)
 
   return response
+}
+
+const createObtainRefresh = async (baseUrl: string, token: string) => {
+  const payload = {
+    refreshToken: token,
+  }
+
+  const options = {
+    method: 'POST',
+    body: JSON.stringify(payload),
+    headers: {
+      Accept: 'application/json',
+      'Content-type': 'application/json',
+    },
+  }
+
+  const url = baseUrl
+
+  const response = await fetch(url, options)
+
+  return await response.json()
 }
 
 const httpService = {
@@ -78,6 +100,7 @@ const httpService = {
   getPostSlug,
   getPost,
   obtainRefresh,
+  createObtainRefresh,
 }
 
 export default httpService

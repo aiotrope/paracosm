@@ -26,3 +26,5 @@ export const postAtom = atom({
   user: { id: '', email: '' },
   slug: '',
 })
+
+export const expAtom = atomWithStorage('expAtom', 0)

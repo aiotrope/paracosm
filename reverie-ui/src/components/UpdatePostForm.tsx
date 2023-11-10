@@ -1,8 +1,6 @@
-import React, { SetStateAction } from 'react'
+import React, { SetStateAction, useEffect } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-// import { useAtom, useSetAtom } from 'jotai'
 import axios from 'axios'
-// import { useParams } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useNavigate } from 'react-router-dom'
@@ -14,7 +12,6 @@ import httpService from '../services/http'
 import { userKeys, postKeys } from '../services/queryKeyFactory'
 import schema from '../types/schema'
 import { UpdatePost, UpdatePostResponse, PartialUser } from '../types/types'
-// import { postsAtom } from '../atoms/store'
 
 interface Props {
   show: boolean
@@ -63,7 +60,6 @@ const UpdatePostForm = ({
       queryClient.invalidateQueries({ queryKey: userKeys.details() })
 
       toast.success(data.message)
-      // setPosts(posts.concat(data?.post))
       reset()
 
       navigate('/')
@@ -91,7 +87,7 @@ const UpdatePostForm = ({
     },
   })
 
-  /*  useEffect(() => {
+  useEffect(() => {
     let defaultValues: UpdatePost = {
       title: '',
       description: '',
@@ -101,7 +97,7 @@ const UpdatePostForm = ({
     defaultValues.description = postDescription
     defaultValues.entry = postEntry
     reset({ ...defaultValues })
-  }, [postDescription, postEntry, postTitle, reset]) */
+  }, [postDescription, postEntry, postTitle, reset])
 
   const onSubmit = async (input: UpdatePost) => {
     mutation.mutateAsync({
@@ -117,7 +113,6 @@ const UpdatePostForm = ({
 
   const fieldStateEntry = getFieldState('entry')
 
-  console.log(user.email)
   return (
     <>
       <Modal show={show} onHide={onHide} fullscreen>
@@ -136,7 +131,6 @@ const UpdatePostForm = ({
               {...register('title', { required: true })}
               aria-invalid={fieldStateTitle.invalid && fieldStateTitle.isDirty}
               className={`${errors.title?.message ? 'is-invalid' : ''} `}
-              value={postTitle}
             />
             <FormControl.Feedback type="invalid">
               {fieldStateTitle?.error?.message}
@@ -144,9 +138,8 @@ const UpdatePostForm = ({
             <label htmlFor="description">Description</label>
             <textarea
               id="description"
-              placeholder="Enter description"
+              placeholder={postDescription}
               {...register('description', { required: true })}
-              value={postDescription}
               aria-invalid={fieldStateDescription.isDirty && fieldStateDescription.invalid}
               className={`${errors.description?.message ? 'is-invalid' : ''} `}
             ></textarea>
@@ -157,9 +150,8 @@ const UpdatePostForm = ({
             <textarea
               id="description"
               rows={7}
-              placeholder="Enter your post..."
+              placeholder={postEntry}
               {...register('entry', { required: true })}
-              value={postEntry}
               aria-invalid={fieldStateEntry.isDirty && fieldStateEntry.invalid}
               className={`${errors.entry?.message ? 'is-invalid' : ''} `}
             ></textarea>

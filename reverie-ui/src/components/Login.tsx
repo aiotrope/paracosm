@@ -6,6 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useNavigate, Link } from 'react-router-dom'
 import { toast } from 'react-hot-toast'
 import { sanitize } from 'isomorphic-dompurify'
+import { jwtDecode } from 'jwt-decode'
 import Stack from 'react-bootstrap/Stack'
 import FormControl from 'react-bootstrap/FormControl'
 
@@ -13,7 +14,7 @@ import httpService from '../services/http'
 import schema from '../types/schema'
 import { _Login, LoginResponse } from '../types/types'
 import { userKeys, postKeys } from '../services/queryKeyFactory'
-import { jwtAtom } from '../atoms/store'
+import { jwtAtom, expAtom } from '../atoms/store'
 
 const Login: React.FC = () => {
   const queryClient = useQueryClient()
@@ -21,6 +22,8 @@ const Login: React.FC = () => {
   const navigate = useNavigate()
 
   const setJwt = useSetAtom(jwtAtom)
+
+  const setExp = useSetAtom(expAtom)
 
   const jwt = useAtomValue(jwtAtom)
 
@@ -30,6 +33,8 @@ const Login: React.FC = () => {
       queryClient.invalidateQueries({ queryKey: userKeys.lists() })
       queryClient.invalidateQueries({ queryKey: userKeys.details() })
       queryClient.invalidateQueries({ queryKey: postKeys.all })
+
+      const decoded = jwtDecode(data.access)
       setJwt((currentValue) => ({
         ...currentValue,
         access: data.access,
@@ -38,6 +43,7 @@ const Login: React.FC = () => {
       toast.success(data?.message)
       reset()
       navigate('/dashboard')
+      if (typeof decoded.exp === 'number') setExp(decoded.exp)
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onError: (error: any) => {

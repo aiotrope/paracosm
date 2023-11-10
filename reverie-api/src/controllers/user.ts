@@ -112,7 +112,7 @@ const refresh = async (req: Request, res: Response) => {
     // console.log('refresh', refreshToken)
 
     return res.status(200).json({
-      message: `${user?.username} successfully refresh auth tokens`,
+      // message: `${user?.username} successfully refresh auth tokens`,
       access: accessToken,
       refresh: refreshToken,
     })

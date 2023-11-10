@@ -26,4 +26,6 @@ export type JWTToken = z.infer<typeof schema.JWTToken>
 
 export type ObtainRefresh = z.infer<typeof schema.ObtainRefresh>
 
+export type ObtainRefreshResponse = z.infer<typeof schema.ObtainRefreshResponse>
+
 export type UpdatePostResponse = z.infer<typeof schema.UpdatePostResponse>
