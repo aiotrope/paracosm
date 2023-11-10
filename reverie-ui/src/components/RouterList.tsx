@@ -11,6 +11,7 @@ const Login = lazy(() => import('./Login'))
 const Dashboard = lazy(() => import('./Dashboard'))
 const Post = lazy(() => import('./Post'))
 const NotFound = lazy(() => import('./404'))
+const Me = lazy(() => import('./Me'))
 
 const RouterList: React.FC = () => {
   const jwt = useAtomValue(jwtAtom)
@@ -27,6 +28,7 @@ const RouterList: React.FC = () => {
         path="/dashboard"
         element={jwt.access !== '' ? <Dashboard /> : <Navigate to="/login" />}
       />
+      <Route path="/me" element={jwt.access !== '' ? <Me /> : <Navigate to="/login" />} />
       <Route path="/posts/slug/:slug" element={<Post />} />
       <Route path="*" element={<NotFound />} />
     </Routes>

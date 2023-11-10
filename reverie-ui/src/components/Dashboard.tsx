@@ -1,7 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { lazy } from 'react'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import axios from 'axios'
 import { useAtomValue } from 'jotai'
 import { jwtDecode } from 'jwt-decode'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { toast } from 'react-hot-toast'
 import moment from 'moment'
 import Stack from 'react-bootstrap/Stack'
 import Row from 'react-bootstrap/Row'
@@ -9,16 +13,19 @@ import Col from 'react-bootstrap/Col'
 
 import { postsAtom, jwtAtom } from '../atoms/store'
 import { Post, User } from '../types/types'
-// import httpService from '../services/http'
-// import { postKeys } from '../services/queryKeyFactory'
+import httpService from '../services/http'
+import { postKeys, userKeys } from '../services/queryKeyFactory'
 
 const AddPostForm = lazy(() => import('./AddPostForm'))
 const UpdatePostForm = lazy(() => import('./UpdatePostForm'))
 
 const Dashboard: React.FC = () => {
   const [show, setShow] = React.useState(false)
+  const [postId, setPostId] = React.useState('')
   const handleClose = (): void => setShow(false)
   const handleShow = (): void => setShow(true)
+
+  const queryClient = useQueryClient()
 
   const posts = useAtomValue(postsAtom)
 
@@ -26,8 +33,45 @@ const Dashboard: React.FC = () => {
 
   const decoded: User = jwtDecode(jwt.access)
 
+  const access = httpService.getAccessToken()
+
+  const navigate = useNavigate()
+
   const userPosts: Post[] = posts.filter((post) => post.user.id === decoded?.id)
 
+  const deleteMutation: any = useMutation({
+    mutationFn: async () =>
+      await axios.delete(`/api/posts/${postId}`, {
+        withCredentials: true,
+        headers: { Authorization: `Bearer ${access}`, 'Content-Type': 'application/json' },
+      }),
+    onSuccess: () => {
+      queryClient.removeQueries({ queryKey: postKeys.detail(postId) })
+      queryClient.invalidateQueries({ queryKey: postKeys.all })
+      queryClient.invalidateQueries({ queryKey: userKeys.details() })
+      queryClient.invalidateQueries({ queryKey: userKeys.lists() })
+      queryClient.invalidateQueries({ queryKey: postKeys.details() })
+      queryClient.invalidateQueries({ queryKey: postKeys.lists() })
+      toast.success(`${postId} successfully deleted`)
+
+      navigate('/')
+    },
+
+    onError: (error: any) => {
+      toast.error(`${error?.response?.data?.error}`)
+    },
+  })
+
+  const handleClickDelete = async (event: any) => {
+    event.preventDefault()
+
+    const target = event.target.id
+
+    if (typeof target === 'string') {
+      setPostId(target)
+      await deleteMutation.mutateAsync(postId)
+    }
+  }
   return (
     <Stack>
       <Row className="mb-2">
@@ -47,7 +91,7 @@ const Dashboard: React.FC = () => {
             <Link to={`/posts/slug/${slug}`}>{title}</Link>
             <p>{description}</p>
             created:
-            {moment(createdAt.toString()).format('LL')}
+            {moment(createdAt).format('LL')}
           </div>
           <div>
             <button onClick={handleShow} className="outline">
@@ -65,19 +109,9 @@ const Dashboard: React.FC = () => {
             />
           </div>
           <div>
-            <button onClick={handleShow} className="outline">
+            <button onClick={handleClickDelete} id={id} className="contrast">
               DELETE POST
             </button>
-            <UpdatePostForm
-              show={show}
-              onHide={handleClose}
-              setShow={setShow}
-              postId={id}
-              postTitle={title}
-              postDescription={description}
-              postEntry={entry}
-              user={user}
-            />
           </div>
         </div>
       ))}

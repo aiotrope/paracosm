@@ -48,7 +48,7 @@ const Home: React.FC = () => {
               <Col>
                 <Link to={`/posts/slug/${slug}`}>{title}</Link>
                 <p>{description}</p>
-                created: {moment(createdAt.toString()).fromNow()}
+                created: {moment(createdAt).fromNow()}
               </Col>
             </Row>
           ))}

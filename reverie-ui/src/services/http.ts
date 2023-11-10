@@ -63,6 +63,17 @@ const getPostSlug = async (slug: string) => {
   return response
 }
 
+const deletePost = async (postId: string) => {
+  const access = getAccessToken()
+  const option = {
+    withCredentials: true,
+    headers: { Authorization: `Bearer ${access}`, 'Content-Type': 'application/json' },
+  }
+  const { data: response } = await axios.delete(`/api/posts/${postId}`, option)
+
+  return response
+}
+
 const obtainRefresh = async (input: ObtainRefresh) => {
   const { data: response } = await axios.post<ObtainRefreshResponse>(`/api/refresh`, input)
 
@@ -101,6 +112,7 @@ const httpService = {
   getPost,
   obtainRefresh,
   createObtainRefresh,
+  deletePost,
 }
 
 export default httpService

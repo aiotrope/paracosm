@@ -53,7 +53,7 @@ const Post: React.FC = () => {
               <h2>Post</h2>
               <p>{post?.title}</p>
               <p>by: {post.user.email}</p>
-              <p>created: {moment(post.createdAt.toString()).format('LL')}</p>
+              <p>created: {moment(post.createdAt).format('LL')}</p>
               <ReactMarkdown rehypePlugins={[rehypeRaw]} remarkPlugins={[gfm]}>
                 {post?.entry}
               </ReactMarkdown>
