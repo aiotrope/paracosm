@@ -23,8 +23,6 @@ const Profile: React.FC = () => {
 
   const navigate = useNavigate()
 
-  // const access = httpService.getAccessToken()
-
   const resetJwt = useResetAtom(jwtAtom)
 
   const mutation: any = useMutation({

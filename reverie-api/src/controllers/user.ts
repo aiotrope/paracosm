@@ -6,7 +6,6 @@ import { Request as JWTRequest } from 'express-jwt'
 
 import jwtHelpers from '../utils/jwtHelpers'
 import PostModel from '../models/post'
-import UserModel from '../models/user'
 import userService from '../services/user'
 import { cacheMethodCalls } from '../utils/cache'
 
@@ -64,9 +63,7 @@ const login = async (req: Request, res: Response) => {
   try {
     const result = await cachedUserService.authenticateUser(req.body)
 
-    const user = await UserModel.findOne({
-      email: result?.email,
-    })
+    const user = await cachedUserService.getByEmail(result?.email)
 
     const accessToken = (await jwtHelpers.signAccessToken(
       user?.id,

@@ -12,7 +12,6 @@ import httpService from '../services/http'
 import { userKeys, postKeys } from '../services/queryKeyFactory'
 import schema from '../types/schema'
 import { CreatePost } from '../types/types'
-// import { postsAtom } from '../atoms/store'
 
 interface Props {
   show: boolean

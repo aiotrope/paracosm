@@ -40,7 +40,7 @@ const Login: React.FC = () => {
       }))
       toast.success(data?.message)
       reset()
-      navigate('/dashboard')
+      navigate('/')
       if (typeof decoded.exp === 'number') setExp(decoded.exp)
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

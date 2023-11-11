@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useAtom } from 'jotai'
-import { Link } from 'react-router-dom'
 import moment from 'moment'
 
 import Stack from 'react-bootstrap/Stack'
@@ -50,7 +49,9 @@ const Home: React.FC = () => {
           {posts.map(({ id, title, description, createdAt, slug }) => (
             <Row key={id}>
               <Col>
-                <Link to={`/posts/slug/${slug}`}>{title}</Link>
+                <p>
+                  <a href={`/posts/slug/${slug}`}>{title}</a>
+                </p>
                 <p>{description}</p>
                 created: {moment(createdAt).fromNow()}
               </Col>

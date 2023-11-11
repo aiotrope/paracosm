@@ -29,6 +29,7 @@ Content-Type: application/json
     "password": "@passworD1#"
 }
 
+
 ### obtain refresh token
 POST http://localhost:7800/api/refresh HTTP/1.1
 Content-Type: application/json
@@ -41,6 +42,7 @@ Content-Type: application/json
 ### get all posts
 GET http://localhost:7800/api/posts/ HTTP/1.1
 Content-Type: application/json
+
 
 ### find post by id
 GET http://localhost:7800/api/posts/654c247e606da3cad57ec0a3 HTTP/1.1
@@ -81,14 +83,12 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NGMyNDNkM
 }
 
 
-
-
-### delete user
+### delete user by user id
 DELETE http://localhost:7800/api/users/6547f96de423fe2533672e5c HTTP/1.1
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NDdmOTZkZTQyM2ZlMjUzMzY3MmU1YyIsInVzZXJuYW1lIjoidXNlcjEiLCJlbWFpbCI6InVzZXIxQGdtYWlsLmNvbSIsImlhdCI6MTY5OTIyMDE5MCwiZXhwIjoxNjk5MjI3MzkwLCJhdWQiOiI2NTQ3Zjk2ZGU0MjNmZTI1MzM2NzJlNWMiLCJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwODAiLCJzdWIiOiJ1c2VyMUBnbWFpbC5jb20ifQ.prJv-dSe6OVa1AD5dwy1OTY4VLKp7G7G58ekrOPFP3s
 
 
-### delete post by id
+### delete post by post id
 DELETE http://localhost:7800/api/posts/65481bd325bbc9bdbb20394c HTTP/1.1
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NDgxYmI4Mjk3MWQxNTUwOTQzNjRkMCIsInVzZXJuYW1lIjoidXNlcjEiLCJlbWFpbCI6InVzZXIxQGdtYWlsLmNvbSIsImlhdCI6MTY5OTIyNzI3NiwiZXhwIjoxNjk5MjM0NDc2LCJhdWQiOiI2NTQ4MWJiODI5NzFkMTU1MDk0MzY0ZDAiLCJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwODAiLCJzdWIiOiJ1c2VyMUBnbWFpbC5jb20ifQ.Ty8wQbbtT2YLRzu6D599L3KrjDITyMRWVzqsEvqjzUg

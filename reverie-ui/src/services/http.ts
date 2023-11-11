@@ -2,16 +2,7 @@
 import axios from 'axios'
 import { jwtDecode } from 'jwt-decode'
 
-import {
-  _Signup,
-  SignupResponse,
-  _Login,
-  LoginResponse,
-  CreatePost,
-  Post,
-  ObtainRefresh,
-  ObtainRefreshResponse,
-} from '../types/types'
+import { _Signup, SignupResponse, _Login, LoginResponse, CreatePost, Post } from '../types/types'
 
 const getAccessToken = () => {
   const jwtAtom = localStorage.getItem('jwtAtom')
@@ -34,13 +25,29 @@ const http = axios.create({
 
 // Interceptor
 http.interceptors.request.use(
-  (config) => {
-    // const token = useAtomValue(jwtAtom)
-
+  async (config) => {
     const token = getAccessToken()
+
+    let expiresIn = localStorage.getItem('expAtom') || 0
 
     if (token) {
       config.headers['Authorization'] = 'Bearer ' + `${token}`
+    } else if (new Date(expiresIn) <= new Date() && token !== undefined) {
+      const _refreshToken = getRefreshToken()
+
+      const reqTokenResponse = await axios.post('/api/refresh', {
+        refreshToken: _refreshToken,
+      })
+
+      localStorage.setItem('jwtAtom', JSON.stringify(reqTokenResponse.data))
+
+      const _token = getAccessToken()
+
+      const decoded = jwtDecode(_token)
+
+      localStorage.setItem('expAtom', JSON.stringify(Number(decoded.exp)))
+
+      config.headers['Authorization'] = 'Bearer ' + `${_token}`
     } else {
       config.headers['Content-Type'] = 'application/json'
     }
@@ -52,37 +59,22 @@ http.interceptors.request.use(
   }
 )
 
-const obtainRefresh = async (input: ObtainRefresh) => {
-  const { data: response } = await http<ObtainRefreshResponse>({
-    method: 'POST',
-    url: `/api/refresh`,
-    data: input,
-  })
-
-  return response
-}
-
 http.interceptors.response.use(
   (res) => res,
   async (err) => {
     const originalRequest = err.config
 
-    let expAtom = localStorage.getItem('expAtom') || 0
-
-    if (
-      new Date(expAtom) <= new Date() ||
-      (err.response.status === 401 && !originalRequest._retry)
-    ) {
+    if (err.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true
 
       try {
-        let _refreshToken = getRefreshToken()
+        const _refreshToken = getRefreshToken()
 
-        let tokenResponse = await axios.post('/api/refresh', { refreshToken: _refreshToken })
+        const tokenResponse = await axios.post('/api/refresh', { refreshToken: _refreshToken })
 
         localStorage.setItem('jwtAtom', JSON.stringify(tokenResponse.data))
 
-        let token = getAccessToken()
+        const token = getAccessToken()
 
         const decoded = jwtDecode(token)
 
@@ -150,27 +142,6 @@ const deletePost = async (postId: string) => {
   return response
 }
 
-const createObtainRefresh = async (baseUrl: string, token: string) => {
-  const payload = {
-    refreshToken: token,
-  }
-
-  const options = {
-    method: 'POST',
-    body: JSON.stringify(payload),
-    headers: {
-      Accept: 'application/json',
-      'Content-type': 'application/json',
-    },
-  }
-
-  const url = baseUrl
-
-  const response = await fetch(url, options)
-
-  return await response.json()
-}
-
 const httpService = {
   signup,
   login,
@@ -180,8 +151,6 @@ const httpService = {
   getPosts,
   getPostSlug,
   getPost,
-  obtainRefresh,
-  createObtainRefresh,
   deletePost,
   http,
 }

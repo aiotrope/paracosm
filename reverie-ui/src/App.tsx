@@ -17,7 +17,7 @@ const App: React.FC = () => {
         <Container style={{ minHeight: '50px' }}>
           <Toaster
             toastOptions={{
-              duration: 8000,
+              duration: 5000,
             }}
           />
           <RouterList />

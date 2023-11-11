@@ -4,7 +4,6 @@ import createHttpError from 'http-errors'
 import mongoose from 'mongoose'
 import { Request as JWTRequest } from 'express-jwt'
 
-// import PostModel from '../models/post'
 import UserModel from '../models/user'
 import postService from '../services/post'
 import userService from '../services/user'
@@ -15,6 +14,7 @@ const cachedPostService = cacheMethodCalls(postService, [
   'deletePost',
   'updatePost',
   'create',
+  'deletePosts',
 ])
 
 const cachedUserService = cacheMethodCalls(userService, [

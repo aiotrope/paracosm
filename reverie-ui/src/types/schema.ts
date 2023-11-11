@@ -45,10 +45,6 @@ const LoginResponse = BaseUser.pick({
   refresh: true,
 }).strict()
 
-const RefreshToken = BaseUser.pick({
-  refreshToken: true,
-}).strict()
-
 const BasePost = z.object({
   id: z.string().min(25),
   title: z.string().trim().min(5),
@@ -96,20 +92,6 @@ const User = InitUser.extend({
   posts: z.array(Post).optional(),
 })
 
-const JWTToken = BaseUser.pick({
-  access: true,
-  refresh: true,
-})
-
-const ObtainRefresh = BaseUser.pick({
-  refreshToken: true,
-})
-
-const ObtainRefreshResponse = BaseUser.pick({
-  access: true,
-  refresh: true,
-})
-
 const schema = {
   BaseUser,
   Signup,
@@ -117,16 +99,12 @@ const schema = {
   SignupResponse,
   CreatePost,
   Login,
-  RefreshToken,
   User,
   BasePost,
   UpdatePost,
   Post,
-  JWTToken,
   UpdatePostResponse,
   PartialUser,
-  ObtainRefresh,
-  ObtainRefreshResponse,
 }
 
 export default schema
