@@ -3,7 +3,7 @@ import React, { lazy } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useAtomValue } from 'jotai'
 import { jwtDecode } from 'jwt-decode'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-hot-toast'
 import moment from 'moment'
 import Stack from 'react-bootstrap/Stack'
@@ -22,10 +22,19 @@ const Dashboard: React.FC = () => {
   const [show, setShow] = React.useState(false)
   const [showUpdate, setShowUpdate] = React.useState(false)
   const [postId, setPostId] = React.useState('')
+  const [postToUpdate, setPostToUpdate] = React.useState('')
   const handleClose = (): void => setShow(false)
   const handleShow = (): void => setShow(true)
   const handleCloseUpdate = (): void => setShowUpdate(false)
-  const handleShowUpdate = (): void => setShowUpdate(true)
+  const handleShowUpdate = (event: any) => {
+    event.preventDefault()
+    setShowUpdate(true)
+    const target = event.target.id
+
+    if (typeof target === 'string') {
+      setPostToUpdate(target)
+    }
+  }
 
   const queryClient = useQueryClient()
 
@@ -84,26 +93,25 @@ const Dashboard: React.FC = () => {
           <AddPostForm show={show} onHide={handleClose} setShow={setShow} />
         </Col>
       </Row>
-      {userPosts.map(({ id, title, description, createdAt, slug, entry, user }) => (
-        <div className="grid" key={id}>
+      {userPosts.map(({ id, title, description, createdAt, slug, user }) => (
+        <div className="grid" key={slug}>
           <div>
-            <Link to={`/posts/slug/${slug}`}>{title}</Link>
+            <p>
+              <a href={`/posts/slug/${slug}`}>{title}</a>
+            </p>
             <p>{description}</p>
             created:
             {moment(createdAt).format('LL')}
           </div>
           <div>
-            <button onClick={handleShowUpdate} className="secondary">
+            <button onClick={handleShowUpdate} className="secondary" id={id}>
               UPDATE POST
             </button>
             <UpdatePostForm
               show={showUpdate}
               onHide={handleCloseUpdate}
               setShow={setShowUpdate}
-              postId={id}
-              postTitle={title}
-              postDescription={description}
-              postEntry={entry}
+              postId={postToUpdate}
               user={user}
             />
           </div>

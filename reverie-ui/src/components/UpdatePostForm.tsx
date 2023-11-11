@@ -1,6 +1,7 @@
-import React, { SetStateAction, useEffect } from 'react'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import React, { SetStateAction, useEffect, useRef } from 'react'
+import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query'
 import { useForm } from 'react-hook-form'
+import { useAtom } from 'jotai'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-hot-toast'
@@ -11,30 +12,44 @@ import httpService from '../services/http'
 import { userKeys, postKeys } from '../services/queryKeyFactory'
 import schema from '../types/schema'
 import { UpdatePost, UpdatePostResponse, PartialUser } from '../types/types'
+import { postAtom } from '../atoms/store'
 
 interface Props {
   show: boolean
   onHide: () => void
   postId: string
-  postTitle: string
-  postDescription: string
-  postEntry: string
   user: PartialUser
   setShow: React.Dispatch<SetStateAction<boolean>>
 }
 
-const UpdatePostForm = ({
-  show,
-  onHide,
-  postId,
-  postTitle,
-  postDescription,
-  postEntry,
-  user,
-}: Props) => {
+const UpdatePostForm = ({ show, onHide, postId, user }: Props) => {
   const queryClient = useQueryClient()
 
   const navigate = useNavigate()
+
+  const [post, setPost] = useAtom(postAtom)
+
+  const postQuery = useQuery({
+    queryKey: [postKeys.detail(postId), postId],
+    queryFn: () => httpService.getPost(postId),
+  })
+
+  const isMounted = useRef(true)
+
+  useEffect(() => {
+    return () => {
+      isMounted.current = false
+    }
+  }, [])
+
+  useEffect(() => {
+    const fetchPost = async () => {
+      if (postQuery?.isSuccess && isMounted) {
+        setPost(postQuery?.data)
+      }
+    }
+    fetchPost()
+  }, [postQuery?.data, postQuery?.isSuccess, setPost])
 
   const mutation = useMutation({
     mutationFn: async (formData: UpdatePost) => {
@@ -89,11 +104,11 @@ const UpdatePostForm = ({
       description: '',
       entry: '',
     }
-    defaultValues.title = postTitle
-    defaultValues.description = postDescription
-    defaultValues.entry = postEntry
+    defaultValues.title = post.title
+    defaultValues.description = post.description
+    defaultValues.entry = post.entry
     reset({ ...defaultValues })
-  }, [postDescription, postEntry, postTitle, reset])
+  }, [post.description, post.entry, post.title, reset])
 
   const onSubmit = async (input: UpdatePost) => {
     mutation.mutateAsync({
@@ -114,7 +129,7 @@ const UpdatePostForm = ({
       <Modal show={show} onHide={onHide} fullscreen>
         <Modal.Header closeButton>
           <Modal.Title>
-            Update Post: {postTitle} by: {user.email}
+            Update Post: {post.title} by: {user.email}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -123,7 +138,7 @@ const UpdatePostForm = ({
             <input
               type="text"
               id="title"
-              placeholder={postTitle}
+              placeholder={post.title}
               {...register('title', { required: true })}
               aria-invalid={fieldStateTitle.invalid && fieldStateTitle.isDirty}
               className={`${errors.title?.message ? 'is-invalid' : ''} `}
@@ -134,7 +149,7 @@ const UpdatePostForm = ({
             <label htmlFor="description">Description</label>
             <textarea
               id="description"
-              placeholder={postDescription}
+              placeholder={post.description}
               {...register('description', { required: true })}
               aria-invalid={fieldStateDescription.isDirty && fieldStateDescription.invalid}
               className={`${errors.description?.message ? 'is-invalid' : ''} `}
@@ -146,7 +161,7 @@ const UpdatePostForm = ({
             <textarea
               id="description"
               rows={7}
-              placeholder={postEntry}
+              placeholder={post.entry}
               {...register('entry', { required: true })}
               aria-invalid={fieldStateEntry.isDirty && fieldStateEntry.invalid}
               className={`${errors.entry?.message ? 'is-invalid' : ''} `}

@@ -1,4 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from 'axios'
+import { jwtDecode } from 'jwt-decode'
 
 import {
   _Signup,
@@ -33,6 +35,8 @@ const http = axios.create({
 // Interceptor
 http.interceptors.request.use(
   (config) => {
+    // const token = useAtomValue(jwtAtom)
+
     const token = getAccessToken()
 
     if (token) {
@@ -48,9 +52,53 @@ http.interceptors.request.use(
   }
 )
 
-http.interceptors.response.use((res) => {
-  return res
-})
+const obtainRefresh = async (input: ObtainRefresh) => {
+  const { data: response } = await http<ObtainRefreshResponse>({
+    method: 'POST',
+    url: `/api/refresh`,
+    data: input,
+  })
+
+  return response
+}
+
+http.interceptors.response.use(
+  (res) => res,
+  async (err) => {
+    const originalRequest = err.config
+
+    let expAtom = localStorage.getItem('expAtom') || 0
+
+    if (
+      new Date(expAtom) <= new Date() ||
+      (err.response.status === 401 && !originalRequest._retry)
+    ) {
+      originalRequest._retry = true
+
+      try {
+        let _refreshToken = getRefreshToken()
+
+        let tokenResponse = await axios.post('/api/refresh', { refreshToken: _refreshToken })
+
+        localStorage.setItem('jwtAtom', JSON.stringify(tokenResponse.data))
+
+        let token = getAccessToken()
+
+        const decoded = jwtDecode(token)
+
+        localStorage.setItem('expAtom', JSON.stringify(Number(decoded.exp)))
+
+        originalRequest.headers.Authorization = 'Bearer ' + `${token}`
+        return http(originalRequest)
+      } catch (_err: any) {
+        if (_err.response && _err.response.data) {
+          return Promise.reject(_err.response.data)
+        }
+        return Promise.reject(_err)
+      }
+    }
+  }
+)
 
 const signup = async (input: _Signup) => {
   const { data: response } = await http<SignupResponse>({
@@ -98,16 +146,6 @@ const getPostSlug = async (slug: string) => {
 
 const deletePost = async (postId: string) => {
   const { data: response } = await http({ method: 'DELETE', url: `/api/posts/${postId}` })
-
-  return response
-}
-
-const obtainRefresh = async (input: ObtainRefresh) => {
-  const { data: response } = await http<ObtainRefreshResponse>({
-    method: 'POST',
-    url: `/api/refresh`,
-    data: input,
-  })
 
   return response
 }

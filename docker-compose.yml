@@ -44,7 +44,7 @@ services:
       DB_PASSWORD_FILE: /run/secrets/db_password
       DB_NAME: reveriedatabase
       DB_URI_FILE: /run/secrets/db_uri
-      EXPIRESIN: 2h
+      EXPIRESIN: 2m
       EXPIRESIN_REFRESH: 30d
       ISS: http://127.0.0.1:8080
       SALTWORKFACTOR: 12
