@@ -2,11 +2,14 @@ import Redis from 'ioredis'
 
 const redis = new Redis('redis://redis:6379')
 
-const cacheMethodCalls = (object, methodsToFlushCacheWith = []) => {
+const cacheMethodCalls = (
+  object: any,
+  methodsToFlushCacheWith: string[] = []
+) => {
   const handler = {
-    get: (module, methodName) => {
-      const method = module[methodName]
-      return async (...methodArgs) => {
+    get: (module: any, methodName: any) => {
+      const method: any = module[methodName]
+      return async (...methodArgs: any) => {
         if (methodsToFlushCacheWith.includes(methodName)) {
           await redis.flushdb()
           return await method.apply(this, methodArgs)
