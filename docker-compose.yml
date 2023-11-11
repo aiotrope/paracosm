@@ -69,7 +69,6 @@ services:
       - redis
     networks:
       - backnet
-      - frontnet
     deploy:
       replicas: 10
 
@@ -85,7 +84,6 @@ services:
       - 7800:7800
     networks:
       - backnet
-      - frontnet
   
   reverie-ui:
     build:
@@ -104,7 +102,6 @@ services:
       - .env.development
     networks:
       - backnet
-      - frontnet
      
 volumes:
   mongo_db:
@@ -112,7 +109,6 @@ volumes:
 
 networks:
   backnet:
-  frontnet:
 
 secrets:
   db_username:

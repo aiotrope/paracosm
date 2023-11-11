@@ -2,19 +2,21 @@
 GET http://localhost:7800/api/ HTTP/1.1
 Authorization:  Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NDgwYjJhZDBhMDZlZWUwNjkzMDNhMSIsInVzZXJuYW1lIjoidXNlcjEiLCJlbWFpbCI6InVzZXIxQGdtYWlsLmNvbSIsImlhdCI6MTY5OTIyMDMzMCwiZXhwIjoxNjk5MjI3NTMwLCJhdWQiOiI2NTQ4MGIyYWQwYTA2ZWVlMDY5MzAzYTEiLCJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwODAiLCJzdWIiOiJ1c2VyMUBnbWFpbC5jb20ifQ.4kYFDANakpa7JRQKMRABPH_6g5q8uA_Bf_p5kVEb5p0
 
+
 ### signup
 POST http://localhost:7800/api/signup HTTP/1.1
 Content-Type: application/json
 
 {
     "username": "user1",
-    "email": "user1@gmail.com",
+    "email": "user2@gmail.com",
     "password": "@passworD1#",
     "confirm": "@passworD1#"
 }
 
 ### find user by id
 GET http://localhost:7800/api/users/65480b2ad0a06eee069303a1 HTTP/1.1
+
 
 ### find all users
 GET http://localhost:7800/api/users HTTP/1.1

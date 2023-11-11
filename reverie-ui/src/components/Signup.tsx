@@ -32,7 +32,8 @@ const Signup: React.FC = () => {
     },
     /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
     onError: (error: any) => {
-      toast.error(`${error?.response?.data?.error}`)
+      // error handling needs refactoring
+      if (error instanceof Error) toast.error(`${error.message}`)
     },
     /* eslint-enable-next-line @typescript-eslint/no-explicit-any */
   })
@@ -56,6 +57,7 @@ const Signup: React.FC = () => {
       confirm: input.confirm,
     }
     const result = await mutate.mutateAsync(sanitizedData)
+
     return result
   }
 

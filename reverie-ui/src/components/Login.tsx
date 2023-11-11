@@ -43,9 +43,9 @@ const Login: React.FC = () => {
       navigate('/')
       if (typeof decoded.exp === 'number') setExp(decoded.exp)
     },
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    onError: (error: any) => {
-      toast.error(`${error?.response?.data?.error}`)
+    onError: () => {
+      // error handling needs refactoring
+      toast.error('Incorrect login credentials!')
     },
   })
 

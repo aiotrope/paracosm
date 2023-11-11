@@ -41,7 +41,8 @@ const AddPostForm = ({ show, onHide }: Props) => {
     },
     /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
     onError: (error: any) => {
-      toast.error(`${error?.response?.data?.error}`)
+      // error handling needs refactoring
+      toast.error(`${error}`)
     },
     /* eslint-enable-next-line @typescript-eslint/no-explicit-any */
   })
